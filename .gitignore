@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Docker
+.dockerignore
+
+# Project Specific - Persistent Data Volumes
+influxdb/data/
+influxdb/config/
+mosquitto/data/
+mosquitto/log/
+mosquitto/config/
+grafana/data/
+nodered/data/
+
+# IDEs
+.vscode/
+.idea/
+
+# Other
+*.log
+*.bak
+*.tmp
+project_specs.pdf

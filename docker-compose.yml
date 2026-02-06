@@ -61,10 +61,10 @@ services:
     networks:
       - iot_net
 
-  # 5. Sensor Container (Python Simulation)
-  sensor:
-    build: ./sensor
-    container_name: iot_sensor
+  # 5. Sensors Container (Python Simulation)
+  sensors:
+    build: ./sensors
+    container_name: iot_sensors
     depends_on:
       - mosquitto
     environment:

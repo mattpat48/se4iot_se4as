@@ -20,6 +20,9 @@ sudo chown -R 1000:1000 nodered/data
 
 # Mosquitto runs as user 1883
 sudo chown -R 1883:1883 mosquitto/
+
+# InfluxDB runs as user 1000
+sudo chown -R 1000:1000 influxdb/
 ```
 
 ## Launch Project

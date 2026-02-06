@@ -15,12 +15,12 @@ env/
 
 # Project Specific - Persistent Data Volumes
 influxdb/data/
-influxdb/config/
 mosquitto/data/
 mosquitto/log/
-mosquitto/config/
 grafana/data/
-nodered/data/
+nodered/data/.npm
+nodered/data/node_modules/
+nodered/data/lib
 
 # IDEs
 .vscode/

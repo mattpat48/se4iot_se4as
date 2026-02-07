@@ -4,6 +4,7 @@ import json
 import random
 import paho.mqtt.client as mqtt
 from datetime import datetime
+from datastructure import SensorData
 
 # Load environment variables
 mqtt_broker = os.getenv("MQTT_BROKER", "mosquitto")
@@ -18,13 +19,14 @@ client = mqtt.Client()
 client.connect(mqtt_broker, 1883, 60)
 
 while True:
-    data = {
-        "sensorid": "sensor_01",
-        "value": random.uniform(10.0, 30.0),
-        "timestamp": datetime.now().isoformat()
-    }
+    # Generazione dati usando la struttura condivisa
+    sensor_data = SensorData(
+        sensorid="sensor_01",
+        value=random.uniform(10.0, 35.0), # Aumentato range per testare alert
+        timestamp=datetime.now().isoformat()
+    )
     
-    payload = json.dumps(data)
+    payload = sensor_data.to_json()
     client.publish("sensors/data", payload)
     print(f"Published: {payload}", flush=True)
     

@@ -55,6 +55,10 @@ services:
       - "1880:1880"
     volumes:
       - ./nodered/data:/data
+    environment:
+      # Sostituisci questi valori con il Token di BotFather e il tuo Chat ID
+      - TELEGRAM_TOKEN=8317054024:AAFWnjSDo1EuvSSoQ4ws8vgmMhvCItzDsKE
+      - TELEGRAM_CHAT_ID=-1003624991814
     depends_on:
       - mosquitto
       - influxdb
@@ -76,6 +80,8 @@ services:
       - MQTT_PORT=1883
     networks:
       - iot_net
+    volumes:
+      - ./datastructure.py:/app/datastructure.py
 
   # 6. Analyzer Container (Python Analysis)
   analyzer:
@@ -93,6 +99,8 @@ services:
       - MQTT_PORT=1883
     networks:
       - iot_net
+    volumes:
+      - ./datastructure.py:/app/datastructure.py
 
 networks:
   iot_net:

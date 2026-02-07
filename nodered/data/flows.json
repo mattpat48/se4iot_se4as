@@ -54,6 +54,64 @@
         "rejectUnauthorized": true
     },
     {
+        "id": "82c509767b86bedd",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "mosquitto",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "912d48843f25675e",
+        "type": "telegram bot",
+        "botname": "mpga_alert_bot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
         "id": "70bc6ce8758ac78b",
         "type": "mqtt in",
         "z": "16c28e429371841e",
@@ -66,8 +124,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 130,
-        "y": 160,
+        "x": 150,
+        "y": 320,
         "wires": [
             [
                 "eaca2a9816b18617",
@@ -80,15 +138,15 @@
         "type": "function",
         "z": "16c28e429371841e",
         "name": "JSON Parser",
-        "func": "var data = msg.payload;\nif (typeof data === 'string') {\n    try {\n        data = JSON.parse(data);\n    } catch (e) {\n        node.warn(\"Error parsing JSON\");\n        return null;\n    }\n}\n\nmsg.payload = [\n    {\n        sensor_id: data.sensorid || \"unknown\",\n        temperature: parseFloat(data.value) || 0,\n        timestamp: data.timestamp ? new Date(data.timestamp) : new Date()\n    }\n];\nmsg.measurement = \"sensors\";\n\nreturn msg;\n",
+        "func": "var data = msg.payload;\nif (typeof data === 'string') {\n    try {\n        data = JSON.parse(data);\n    } catch (e) {\n        node.warn(\"Error parsing JSON\");\n        return null;\n    }\n}\n\nmsg.payload = [\n    {\n        sensor_id: data.sensorid || \"unknown\",\n        data: parseFloat(data.value) || 0,\n        timestamp: data.timestamp ? new Date(data.timestamp) : new Date()\n    }\n];\nmsg.measurement = \"sensors\";\n\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 350,
-        "y": 240,
+        "x": 390,
+        "y": 400,
         "wires": [
             [
                 "ab641faf5dbb3994"
@@ -108,8 +166,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 350,
-        "y": 160,
+        "x": 390,
+        "y": 320,
         "wires": []
     },
     {
@@ -126,8 +184,81 @@
         "retentionPolicyV18Flux": "",
         "org": "iot_org",
         "bucket": "iot_bucket",
-        "x": 580,
-        "y": 240,
+        "x": 620,
+        "y": 400,
         "wires": []
+    },
+    {
+        "id": "aef123850d7b152c",
+        "type": "mqtt in",
+        "z": "16c28e429371841e",
+        "name": "",
+        "topic": "analyzer/alerts",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "82c509767b86bedd",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 140,
+        "wires": [
+            [
+                "c6016708cfcabcb3",
+                "5115b4d5de3b8dd0"
+            ]
+        ]
+    },
+    {
+        "id": "5ecafadf4c2b600c",
+        "type": "telegram sender",
+        "z": "16c28e429371841e",
+        "name": "Channel Notificator",
+        "bot": "912d48843f25675e",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 630,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c6016708cfcabcb3",
+        "type": "debug",
+        "z": "16c28e429371841e",
+        "name": "Debug Log",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "5115b4d5de3b8dd0",
+        "type": "function",
+        "z": "16c28e429371841e",
+        "name": "Message Setup",
+        "func": "var chatId = env.get(\"TELEGRAM_CHAT_ID\");\n\nmsg.payload = {\n    chatId: chatId,\n    type: 'message',\n    content: msg.payload\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 220,
+        "wires": [
+            [
+                "5ecafadf4c2b600c"
+            ]
+        ]
     }
 ]

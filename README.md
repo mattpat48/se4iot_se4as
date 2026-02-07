@@ -39,3 +39,7 @@ To watch the logs of the singles containers, simply type:
 sudo docker-compose logs -f [name]
 ```
 where name corresponds to the name listed in the `docker-compose.yml` file.
+
+## Monitorate Alerts
+
+To follow the alerts of the system, simply join the Telegram channel [@mpga_alert_channel](https://t.me/mpga_alert_channel).

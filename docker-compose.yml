@@ -41,6 +41,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
       - ./grafana/data:/var/lib/grafana
     depends_on:
       - influxdb
@@ -56,7 +58,6 @@ services:
     volumes:
       - ./nodered/data:/data
     environment:
-      # Sostituisci questi valori con il Token di BotFather e il tuo Chat ID
       - TELEGRAM_TOKEN=8317054024:AAFWnjSDo1EuvSSoQ4ws8vgmMhvCItzDsKE
       - TELEGRAM_CHAT_ID=-1003624991814
     depends_on:

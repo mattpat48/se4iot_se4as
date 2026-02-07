@@ -214,6 +214,7 @@
         "id": "5ecafadf4c2b600c",
         "type": "telegram sender",
         "z": "16c28e429371841e",
+        "d": true,
         "name": "Channel Notificator",
         "bot": "912d48843f25675e",
         "haserroroutput": false,

@@ -195,7 +195,7 @@
         "name": "",
         "topic": "analyzer/alerts",
         "qos": "2",
-        "datatype": "json",
+        "datatype": "auto-detect",
         "broker": "82c509767b86bedd",
         "nl": false,
         "rap": true,

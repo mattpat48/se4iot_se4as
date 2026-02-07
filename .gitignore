@@ -1,33 +1,14 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Environments
-.venv/
-venv/
-ENV/
-env/
-.env
-
-# Docker
-.dockerignore
-
-# Project Specific - Persistent Data Volumes
 influxdb/data/
+
 mosquitto/data/
 mosquitto/log/
+
 grafana/data/
-nodered/data/.npm
+
 nodered/data/node_modules/
-nodered/data/lib
-
-# IDEs
-.vscode/
-.idea/
-
-# Other
-*.log
-*.bak
-*.tmp
-project_specs.pdf
+nodered/data/lib/
+nodered/data/.config.*
+nodered/data/.npm
+!nodered/data/flows.json
+!nodered/data/settings.js
+!nodered/data/package.json

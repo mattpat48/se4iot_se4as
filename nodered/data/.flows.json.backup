@@ -116,7 +116,7 @@
         "type": "mqtt in",
         "z": "16c28e429371841e",
         "name": "",
-        "topic": "sensors/data",
+        "topic": "City/data/#",
         "qos": "2",
         "datatype": "json",
         "broker": "b22a14a6c6c84ecf",
@@ -124,7 +124,7 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 150,
+        "x": 140,
         "y": 320,
         "wires": [
             [
@@ -193,7 +193,7 @@
         "type": "mqtt in",
         "z": "16c28e429371841e",
         "name": "",
-        "topic": "analyzer/alerts",
+        "topic": "City/alerts/#",
         "qos": "2",
         "datatype": "auto-detect",
         "broker": "82c509767b86bedd",
@@ -201,7 +201,7 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 160,
+        "x": 150,
         "y": 140,
         "wires": [
             [
@@ -214,6 +214,7 @@
         "id": "5ecafadf4c2b600c",
         "type": "telegram sender",
         "z": "16c28e429371841e",
+        "d": true,
         "name": "Channel Notificator",
         "bot": "912d48843f25675e",
         "haserroroutput": false,

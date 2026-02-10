@@ -52,7 +52,7 @@ class SimulatedSensor:
         self.volatility = volatility
         self.value = random.uniform(min_v, max_v)
         
-        # Determina il tipo per il topic basandosi sulla classe
+        # Determine topic type based on data class
         if data_cls == SensorData: self.topic_type = "temperature"
         elif data_cls == AirHumidityData: self.topic_type = "humidity"
         elif data_cls == AirQualityData: self.topic_type = "co2"
@@ -60,38 +60,40 @@ class SimulatedSensor:
         elif data_cls == NoiseLevelData: self.topic_type = "noise"
 
     def tick(self):
-        # Logica Random Walk: varia il valore gradualmente
+        # Random walk with volatility
         change = random.uniform(-self.volatility, self.volatility)
         self.value += change
-        # Mantiene il valore entro i limiti realistici
+        # Keep value within bounds
         self.value = max(self.min_v, min(self.value, self.max_v))
         
-        # Crea l'oggetto dati
+        # Create data object
         data_obj = self.data_cls(
             sensorid=self.sensor_id,
             value=self.value,
             timestamp=datetime.now().isoformat()
         )
         
-        # Topic gerarchico: City/Location/DataType
+        # Topic Logic: City/data/Location/DataType
         topic = f"City/data/{self.location}/{self.topic_type}"
         return topic, data_obj.to_json()
 
-# Inizializzazione Sensori per ogni Location
+# Sensor Generation Logic
 sensors = []
 sensor_count = 1
+sensors_per_type = 1 # Number of sensors per type per location (can be adjusted)
 
 for loc in LOCATIONS:
     for param in SENSOR_PARAMS:
-        sensors.append(SimulatedSensor(
-            sensor_count,
-            loc,
-            param["data_cls"],
-            param["min_v"],
-            param["max_v"],
-            param["volatility"]
-        ))
-        sensor_count += 1
+        for _ in range(sensors_per_type):
+            sensors.append(SimulatedSensor(
+                sensor_count,
+                loc,
+                param["data_cls"],
+                param["min_v"],
+                param["max_v"],
+                param["volatility"]
+            ))
+            sensor_count += 1
 
 while True:
     try:

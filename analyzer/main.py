@@ -23,6 +23,9 @@ THRESHOLDS = {
     "noise_level": 85.0
 }
 
+# Dictionary to track the alert state of each sensor: {sensor_id: bool}
+active_alerts = {}
+
 def on_connect(client, userdata, flags, rc):
     print(f"Connected with result code {rc}", flush=True)
     client.subscribe("City/#")
@@ -42,11 +45,20 @@ def on_message(client, userdata, msg):
         # Check threshold based on data type
         threshold = THRESHOLDS.get(data.type)
         
-        if threshold is not None and data.value > threshold:
-            alert_msg = f"⚠️ ALERT: {data.sensorid} ({data.type}) at {location} detected {data.value:.2f} {data.unit} (Threshold: {threshold})"
-            # Post alert to MQTT topic for Node-RED to pick up
-            client.publish(f"City/alerts/{location}/{data.type}", alert_msg, qos=1)
-            print(f"!!! ALERT SENT: {alert_msg}", flush=True)
+        if threshold is not None:
+            is_alerting = active_alerts.get(data.sensorid, False)
+            
+            if data.value > threshold:
+                if not is_alerting:
+                    alert_msg = f"⚠️ ALERT: {data.sensorid} ({data.type}) at {location} detected {data.value:.2f} {data.unit} (Threshold: {threshold})"
+                    client.publish(f"City/alerts/{location}/{data.type}", alert_msg, qos=1)
+                    print(f"!!! ALERT SENT: {alert_msg}", flush=True)
+                    active_alerts[data.sensorid] = True
+            elif is_alerting:
+                alert_msg = f"✅ RECOVERY: {data.sensorid} ({data.type}) at {location} returned to normal {data.value:.2f} {data.unit}"
+                client.publish(f"City/alerts/{location}/{data.type}", alert_msg, qos=1)
+                print(f"!!! RECOVERY SENT: {alert_msg}", flush=True)
+                active_alerts[data.sensorid] = False
             
     except Exception as e:
         print(f"Error processing message: {e}", flush=True)

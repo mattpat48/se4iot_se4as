@@ -138,7 +138,7 @@
         "type": "function",
         "z": "16c28e429371841e",
         "name": "JSON Parser",
-        "func": "var data = msg.payload;\nif (typeof data === 'string') {\n    try {\n        data = JSON.parse(data);\n    } catch (e) {\n        node.warn(\"Error parsing JSON\");\n        return null;\n    }\n}\n\nmsg.payload = [\n    {\n        sensor_id: data.sensorid || \"unknown\",\n        data: parseFloat(data.value) || 0,\n        timestamp: data.timestamp ? new Date(data.timestamp) : new Date()\n    }\n];\nmsg.measurement = \"sensors\";\n\nreturn msg;\n",
+        "func": "var data = msg.payload;\nif (typeof data === 'string') {\n    try {\n        data = JSON.parse(data);\n    } catch (e) {\n        node.warn(\"Error parsing JSON\");\n        return null;\n    }\n}\n\nvar topicParts = msg.topic.split('/');\nvar location = topicParts.length > 2 ? topicParts[2] : \"unknown\";\nvar sensorType = topicParts.length > 3 ? topicParts[3] : \"unknown\";\n\nmsg.measurement = \"sensors\";\nmsg.payload = [\n    {\n        value: parseFloat(data.value) || 0,\n        timestamp: data.timestamp ? new Date(data.timestamp) : new Date()\n\n    },\n    {\n        sensorid: String(data.sensorid || \"unknown\"),\n        location: String(location),\n        type: String(sensorType)\n    }\n];\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,

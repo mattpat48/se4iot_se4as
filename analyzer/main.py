@@ -1,7 +1,7 @@
 import time
 import os
 import paho.mqtt.client as mqtt
-from datastructure import SensorData
+from datastructure import SensorData, THRESHOLDS
 
 # Load environment variables
 mqtt_broker = os.getenv("MQTT_BROKER", "mosquitto")
@@ -13,15 +13,6 @@ influx_org = os.getenv("INFLUXDB_ORG", "iot_org")
 influx_bucket = os.getenv("INFLUXDB_BUCKET", "iot_bucket")
 
 print(f"Analyzer container started. Connecting to {mqtt_broker}...", flush=True)
-
-# Define thresholds for each sensor type
-THRESHOLDS = {
-    "temperature": 30.0,
-    "humidity": 80.0,
-    "co2": 1000.0,
-    "traffic_speed": 80.0,
-    "noise_level": 85.0
-}
 
 # Dictionary to track the alert state of each sensor: {sensor_id: bool}
 active_alerts = {}

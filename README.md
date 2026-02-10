@@ -43,3 +43,32 @@ where name corresponds to the name listed in the `docker-compose.yml` file.
 ## Monitorate Alerts
 
 To follow the alerts of the system, simply join the Telegram channel [@mpga_alert_channel](https://t.me/mpga_alert_channel).
+
+## Manipulate Sensors and Locations
+
+To add/remove sensors and locations from the code, simply edit the `datastructure.py`:
+- to add locations, simply insert a new entry to the `LOCATIONS` array
+```python
+LOCATIONS = ["Road", "Square", "Park"] # Default locations
+```
+- to add sensors, create a new `@dataclass` and add the default parameters, then configure the threshold (note that minVal, maxVal vold and threshold should be float values)
+```python
+@dataclass
+class NewSensorData(SensorData):
+    type: str = "sensor_data_name"
+    unit: str = "sensor_unit"
+
+SENSOR_PARAMS = [
+	...
+	{"data_cls": NewSensorData, "min_v": minVal, "max_v": maxVal, "volatility": vol, "topic_type": "type"},
+]
+
+THRESHOLDS = [
+	...
+	"type": threshold
+]
+```
+- to add more sensors per location, simply edit the SENSOR_PER_TYPE value
+```python
+SENSOR_PER_TYPE = 1 # Default number is 1, so each location has only one sensor per parameter to measure
+```

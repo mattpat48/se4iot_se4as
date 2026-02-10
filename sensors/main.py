@@ -6,7 +6,7 @@ import paho.mqtt.client as mqtt
 from datetime import datetime
 from datastructure import (
     SensorData, AirQualityData, AirHumidityData, TrafficSpeedData, NoiseLevelData,
-    LOCATIONS, SENSOR_PARAMS
+    LOCATIONS, SENSOR_PARAMS, SENSORS_PER_TYPE
 )
 
 # Load environment variables
@@ -43,7 +43,7 @@ while True:
 client.loop_start()
 
 class SimulatedSensor:
-    def __init__(self, id_num, location, data_cls, min_v, max_v, volatility):
+    def __init__(self, id_num, location, data_cls, min_v, max_v, volatility, topic_type):
         self.sensor_id = f"sensor_{id_num:02d}"
         self.location = location
         self.data_cls = data_cls
@@ -51,13 +51,7 @@ class SimulatedSensor:
         self.max_v = max_v
         self.volatility = volatility
         self.value = random.uniform(min_v, max_v)
-        
-        # Determine topic type based on data class
-        if data_cls == SensorData: self.topic_type = "temperature"
-        elif data_cls == AirHumidityData: self.topic_type = "humidity"
-        elif data_cls == AirQualityData: self.topic_type = "co2"
-        elif data_cls == TrafficSpeedData: self.topic_type = "traffic"
-        elif data_cls == NoiseLevelData: self.topic_type = "noise"
+        self.topic_type = topic_type
 
     def tick(self):
         # Random walk with volatility
@@ -80,18 +74,18 @@ class SimulatedSensor:
 # Sensor Generation Logic
 sensors = []
 sensor_count = 1
-sensors_per_type = 1 # Number of sensors per type per location (can be adjusted)
 
 for loc in LOCATIONS:
     for param in SENSOR_PARAMS:
-        for _ in range(sensors_per_type):
+        for _ in range(SENSORS_PER_TYPE):
             sensors.append(SimulatedSensor(
                 sensor_count,
                 loc,
                 param["data_cls"],
                 param["min_v"],
                 param["max_v"],
-                param["volatility"]
+                param["volatility"],
+                param["topic_type"]
             ))
             sensor_count += 1
 

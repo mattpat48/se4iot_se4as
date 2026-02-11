@@ -5,8 +5,7 @@ import random
 import paho.mqtt.client as mqtt
 from datetime import datetime
 from datastructure import (
-    SensorData, AirQualityData, AirHumidityData, TrafficSpeedData, NoiseLevelData,
-    LOCATIONS, SENSOR_PARAMS, SENSORS_PER_TYPE
+    SensorData, LOCATIONS, SENSOR_PARAMS, SENSORS_PER_TYPE
 )
 
 # Load environment variables
@@ -20,14 +19,63 @@ influx_bucket = os.getenv("INFLUXDB_BUCKET", "iot_bucket")
 
 print(f"Sensors container started. Connecting to {mqtt_broker}...", flush=True)
 
+# Global variables for dynamic configuration
+current_locations = list(LOCATIONS)
+sensors = []
+current_sensor_params = list(SENSOR_PARAMS)
+current_sensors_per_type = SENSORS_PER_TYPE
+
+def generate_sensors():
+    global sensors, current_locations
+    new_sensors = []
+    sensor_count = 1
+    print(f"Regenerating sensors for locations: {current_locations}", flush=True)
+    
+    for loc in current_locations:
+        for param in current_sensor_params:
+            for _ in range(current_sensors_per_type):
+                new_sensors.append(SimulatedSensor(
+                    sensor_count,
+                    loc,
+                    param["type"],
+                    param["unit"],
+                    param["min_v"],
+                    param["max_v"],
+                    param["volatility"],
+                ))
+                sensor_count += 1
+    sensors = new_sensors
+    print(f"Total sensors active: {len(sensors)}", flush=True)
+
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker!", flush=True)
+        client.subscribe([("City/update/locations", 1), ("City/update/config", 1)])
     else:
         print(f"Failed to connect, return code {rc}", flush=True)
 
+def on_message(client, userdata, msg):
+    try:
+        if msg.topic == "City/update/locations":
+            payload = json.loads(msg.payload.decode())
+            if "locations" in payload:
+                global current_locations
+                current_locations = payload["locations"]
+                generate_sensors()
+        elif msg.topic == "City/update/config":
+            payload = json.loads(msg.payload.decode())
+            global current_sensor_params, current_sensors_per_type
+            if "sensor_params" in payload:
+                current_sensor_params = payload["sensor_params"]
+            if "sensors_per_type" in payload:
+                current_sensors_per_type = int(payload["sensors_per_type"])
+            generate_sensors()
+    except Exception as e:
+        print(f"Error processing config update: {e}", flush=True)
+
 client = mqtt.Client()
 client.on_connect = on_connect
+client.on_message = on_message
 
 if mqtt_user and mqtt_password:
     client.username_pw_set(mqtt_user, mqtt_password)
@@ -43,15 +91,15 @@ while True:
 client.loop_start()
 
 class SimulatedSensor:
-    def __init__(self, id_num, location, data_cls, min_v, max_v, volatility, topic_type):
+    def __init__(self, id_num, location, type_name, unit, min_v, max_v, volatility):
         self.sensor_id = f"sensor_{id_num:02d}"
         self.location = location
-        self.data_cls = data_cls
+        self.type_name = type_name
+        self.unit = unit
         self.min_v = min_v
         self.max_v = max_v
         self.volatility = volatility
         self.value = random.uniform(min_v, max_v)
-        self.topic_type = topic_type
 
     def tick(self):
         # Random walk with volatility
@@ -61,33 +109,20 @@ class SimulatedSensor:
         self.value = max(self.min_v, min(self.value, self.max_v))
         
         # Create data object
-        data_obj = self.data_cls(
+        data_obj = SensorData(
             sensorid=self.sensor_id,
             value=self.value,
-            timestamp=datetime.now().isoformat()
+            timestamp=datetime.now().isoformat(),
+            type=self.type_name,
+            unit=self.unit
         )
         
         # Topic Logic: City/data/Location/DataType
-        topic = f"City/data/{self.location}/{self.topic_type}"
+        topic = f"City/data/{self.location}/{self.type_name}"
         return topic, data_obj.to_json()
 
-# Sensor Generation Logic
-sensors = []
-sensor_count = 1
-
-for loc in LOCATIONS:
-    for param in SENSOR_PARAMS:
-        for _ in range(SENSORS_PER_TYPE):
-            sensors.append(SimulatedSensor(
-                sensor_count,
-                loc,
-                param["data_cls"],
-                param["min_v"],
-                param["max_v"],
-                param["volatility"],
-                param["topic_type"]
-            ))
-            sensor_count += 1
+# Initial generation
+generate_sensors()
 
 while True:
     try:

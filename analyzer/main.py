@@ -1,5 +1,6 @@
 import time
 import os
+import json
 import paho.mqtt.client as mqtt
 from datastructure import SensorData, THRESHOLDS
 
@@ -19,10 +20,18 @@ active_alerts = {}
 
 def on_connect(client, userdata, flags, rc):
     print(f"Connected with result code {rc}", flush=True)
-    client.subscribe("City/#")
+    client.subscribe([("City/#", 0), ("City/update/thresholds", 1)])
 
 def on_message(client, userdata, msg):
     try:
+        # Handle Configuration Updates
+        if msg.topic.startswith("City/update/thresholds"):
+            payload = json.loads(msg.payload.decode())
+            if "thresholds" in payload:
+                print(f"Updating thresholds: {payload['thresholds']}", flush=True)
+                THRESHOLDS.update(payload["thresholds"])
+            return
+
         # Extract location from topic (City/Location/Type)
         topic_parts = msg.topic.split("/")
         location = topic_parts[2] if len(topic_parts) > 1 else "Unknown"

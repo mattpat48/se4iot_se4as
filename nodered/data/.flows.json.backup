@@ -115,9 +115,10 @@
         "id": "70bc6ce8758ac78b",
         "type": "mqtt in",
         "z": "16c28e429371841e",
+        "d": true,
         "name": "",
         "topic": "City/data/#",
-        "qos": "2",
+        "qos": "1",
         "datatype": "json",
         "broker": "b22a14a6c6c84ecf",
         "nl": false,
@@ -138,7 +139,7 @@
         "type": "function",
         "z": "16c28e429371841e",
         "name": "JSON Parser",
-        "func": "var data = msg.payload;\nif (typeof data === 'string') {\n    try {\n        data = JSON.parse(data);\n    } catch (e) {\n        node.warn(\"Error parsing JSON\");\n        return null;\n    }\n}\n\nvar topicParts = msg.topic.split('/');\nvar location = topicParts.length > 2 ? topicParts[2] : \"unknown\";\nvar sensorType = topicParts.length > 3 ? topicParts[3] : \"unknown\";\n\nmsg.measurement = \"sensors\";\nmsg.payload = {\n    value: parseFloat(data.value) || 0\n};\nmsg.tags = {\n    sensorid: String(data.sensorid || \"unknown\"),\n    location: String(location),\n    type: String(sensorType)\n};\nmsg.timestamp = data.timestamp ? new Date(data.timestamp) : new Date()\n\nreturn msg;",
+        "func": "var data = msg.payload;\nif (typeof data === 'string') {\n    try {\n        data = JSON.parse(data);\n    } catch (e) {\n        node.warn(\"Error parsing JSON\");\n        return null;\n    }\n}\n\nvar topicParts = msg.topic.split('/');\nvar location = topicParts.length > 2 ? topicParts[2] : \"unknown\";\nvar sensorType = topicParts.length > 3 ? topicParts[3] : \"unknown\";\nvar unit = data.unit || \"value\";\n\nvar fields = {};\nfields[unit] = parseFloat(data.value) || 0;\n\nmsg.measurement = \"sensors\";\nmsg.payload = [\n    fields,\n    {\n        sensorid: String(data.sensorid || \"unknown\"),\n        location: String(location),\n        type: String(sensorType),\n        timestamp: String(data.timestamp ? new Date(data.timestamp) : new Date())\n    }\n];\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -194,7 +195,7 @@
         "z": "16c28e429371841e",
         "name": "",
         "topic": "City/alerts/#",
-        "qos": "2",
+        "qos": "1",
         "datatype": "auto-detect",
         "broker": "82c509767b86bedd",
         "nl": false,
@@ -214,6 +215,7 @@
         "id": "5ecafadf4c2b600c",
         "type": "telegram sender",
         "z": "16c28e429371841e",
+        "d": true,
         "name": "Channel Notificator",
         "bot": "912d48843f25675e",
         "haserroroutput": false,
@@ -260,5 +262,43 @@
                 "5ecafadf4c2b600c"
             ]
         ]
+    },
+    {
+        "id": "12424743913129f2",
+        "type": "mqtt in",
+        "z": "16c28e429371841e",
+        "name": "",
+        "topic": "City/updates/#",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "b22a14a6c6c84ecf",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 500,
+        "wires": [
+            [
+                "04a97613b16afc16"
+            ]
+        ]
+    },
+    {
+        "id": "04a97613b16afc16",
+        "type": "debug",
+        "z": "16c28e429371841e",
+        "name": "Debug Log",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 500,
+        "wires": []
     }
 ]

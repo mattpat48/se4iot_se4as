@@ -32,6 +32,12 @@ To start the stack:
 sudo docker-compose up -d --remove-orphans
 ```
 
+We also suggest to run:
+```bash
+sudo docker exec -it iot_influxdb influx delete --bucket iot_bucket --org iot_org --start '1970-01-01T00:00:00Z' --stop '2030-01-01T00:00:00Z' --token my-super-secret-auth-token
+```
+to perfectly clean the database at startup.
+
 ## Monitorate logs
 
 To watch the logs of the singles containers, simply type:
@@ -46,10 +52,21 @@ To follow the alerts of the system, simply join the Telegram channel [@mpga_aler
 
 ## Manipulate Sensors and Locations
 
-To add/remove sensors and locations from the code, simply edit the `datastructure.py`:
-- to add locations, simply insert a new entry to the `LOCATIONS` array
+You can manipulate the system configuration in two ways: **Runtime** (via UI) or **Static** (via code).
+
+### 1. Runtime Configuration (UI)
+Access the **IoT Control Panel** at http://localhost:8501.
+From here you can:
+- **Update Locations**: Add or remove locations dynamically.
+- **Update Thresholds**: Adjust the alert thresholds for the Analyzer.
+- **Configure Sensors**: Add new sensor types or change the density (sensors per type) without restarting the containers.
+
+### 2. Static Configuration (Defaults)
+To change the default values loaded at startup, edit `datastructure.py`:
+
+- **Locations**: Edit the `LOCATIONS` list.
 ```python
-LOCATIONS = ["Road", "Square", "Park"] # Default locations
+LOCATIONS = ["Road", "Square", "Park"]
 ```
 - to add sensors, create a new `@dataclass` and add the default parameters, then configure the threshold (note that minVal, maxVal vold and threshold should be float values)
 ```python

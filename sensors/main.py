@@ -46,6 +46,8 @@ def generate_sensors():
                 sensor_count += 1
     sensors = new_sensors
     print(f"Total sensors active: {len(sensors)}", flush=True)
+    active_types = set(s.type_name for s in sensors)
+    print(f"Active Sensor Types: {active_types}", flush=True)
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -133,4 +135,4 @@ while True:
     except Exception as e:
         print(f"Error in generation loop: {e}", flush=True)
         
-    time.sleep(5)
+    time.sleep(10)

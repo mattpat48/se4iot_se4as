@@ -31,6 +31,14 @@ def get_mqtt_client():
 
 client = get_mqtt_client()
 
+# --- Session State Initialization ---
+if 'sensor_params' not in st.session_state:
+    st.session_state.sensor_params = list(ds.SENSOR_PARAMS)
+if 'sensors_per_type' not in st.session_state:
+    st.session_state.sensors_per_type = ds.SENSORS_PER_TYPE
+if 'thresholds' not in st.session_state:
+    st.session_state.thresholds = dict(ds.THRESHOLDS)
+
 # --- UI Layout ---
 
 col1, col2, col3 = st.columns(3)
@@ -54,22 +62,30 @@ with col2:
     st.subheader("⚠️ Threshold Configuration")
     st.info("Adjust the alert thresholds for the Analyzer.")
 
-    # Threshold Inputs
-    t_temp = st.slider("Temperature Threshold (°C)", 0.0, 50.0, 30.0)
-    t_hum = st.slider("Humidity Threshold (%)", 0.0, 100.0, 80.0)
-    t_air = st.slider("Air Quality Threshold (AQI)", 0.0, 500.0, 150.0)
-    t_speed = st.slider("Traffic Speed Threshold (km/h)", 0.0, 150.0, 90.0)
-    t_noise = st.slider("Noise Level Threshold (dB)", 0.0, 120.0, 85.0)
+    new_thresholds = {}
+
+    # Dynamically generate sliders for each sensor type
+    for param in st.session_state.sensor_params:
+        t_type = param["type"]
+        t_unit = param["unit"]
+        
+        # Get current value or default to 80% of max value
+        current_val = st.session_state.thresholds.get(t_type, param["max_v"] * 0.8)
+        
+        # Create slider
+        val = st.slider(
+            f"{t_type} ({t_unit})", 
+            min_value=0.0, 
+            max_value=float(param["max_v"]) * 1.5, 
+            value=float(current_val),
+            key=f"thresh_{t_type}"
+        )
+        new_thresholds[t_type] = val
 
     if st.button("Update Thresholds"):
+        st.session_state.thresholds.update(new_thresholds)
         payload = {
-            "thresholds": {
-                "temperature": t_temp,
-                "humidity": t_hum,
-                "co2": t_air,
-                "traffic_speed": t_speed,
-                "noise_level": t_noise
-            }
+            "thresholds": new_thresholds
         }
         if client:
             client.publish("City/update/thresholds", json.dumps(payload), retain=True, qos=1)
@@ -78,12 +94,6 @@ with col2:
 with col3:
     st.subheader("⚙️ Sensor Configuration")
     st.info("Add new sensor types and configure density.")
-
-    # Initialize session state with defaults from datastructure.py
-    if 'sensor_params' not in st.session_state:
-        st.session_state.sensor_params = list(ds.SENSOR_PARAMS)
-    if 'sensors_per_type' not in st.session_state:
-        st.session_state.sensors_per_type = ds.SENSORS_PER_TYPE
 
     # Sensors per Type
     st.session_state.sensors_per_type = st.number_input("Sensors per Type per Location", min_value=1, value=st.session_state.sensors_per_type)

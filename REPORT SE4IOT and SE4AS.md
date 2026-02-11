@@ -26,30 +26,29 @@ Sensor include in the published MQTT package:
 
 ### Communication Protocols
 
-TODO: dynamic thresholds config, request specific data (UI?)
-
 MQTT was employed as the main protocol for communication as required. For the broker, we chose to adopt the eclipse-mosquitto docker image.
 
-The structure of topics falls into two categories: alerts and data generation.
+The structure of topics falls into three categories: alerts and data generation.
 Regarding the alerts, the structure is `City/alerts/[place]/[type]`, where `place` is the location the anomaly was manifested and `type` is the type of measurement that raised the alert.
 For the data generation the structure is similar, being `City/data/[place]/[type]`, following the same logic of the alerts.
 We chose to prioritize locations over type of measurement because we find more fitting in a Smart City environment the option to monitorate the entire place with each of its parameters, instead of observing the same parameter but with different locations.
+Finally, we have a third category of topics, the `City/update/#`. In this topic, every kind of update to the configuration of the system will be posted, such as new locations, new sensors, thresholds modifications.
 
-The `sensors` publishes in the `City/data` topic, while the analyzer subscribes to that topic and posts in the `City/alerts` topic.
+The `sensors` publishes in the `City/data` topic, while the analyzer subscribes to that topic and posts in the `City/alerts` topic. Both these components subscribe to the related `update` topics, and the UI component posts the updates requested by the user in these topics.
 
 ### Data Processing
 
-TODO: use NodeRED to process data and send alerts OR use analyzer code to examine data
-TODO: trasform all data into JSON (useless?, already manipulating the MQTT package to store it in influx)
-TODO: calculations ?
+We decided to build our customized analyzer, which is deployed into an independent container. This component subscribes to the various MQTT topics required (`data` and `update` topics), then basing off the set thresholds evaluate each parameter received, and finally procedes to send an alert (critical situation, e.g. parameter beyond threshold) or an alert-revoke (parameter becomes normal again) if necessary.
+
+We use Node-RED to handle the communication between eterogeneous components, such as analyzer and Telegram bot or sensors and InfluxDB. We used `MQTT in` nodes to receive the messages published on the topics, and then we forward these messages to the related node (such as Telegram `sender` or `influxdb out` nodes).
 
 ### Data Storage
 
-TODO: tag with timestamp 
-
-InfluxDB is the time-series database we chose to store our data. As requested, the data is forwarded to InfluxDB using NodeRED. The data is tagged using the Sensor ID, the location of the data perceived and the type of data recorded.
+InfluxDB is the time-series database we chose to store our data. As requested, the data is forwarded to InfluxDB using Node-RED. The data is tagged using the Sensor ID (structured as said in the previous section), the location of the data perceived, the type of data recorded (such as temperature, co2, ...) and finally the timestamp of the event.
 
 ### Visualization
+
+TODO: tutto grafana
 
 ### Alerting Mechanisms
 
@@ -74,8 +73,6 @@ This requirement was satisfied using an external file, `datastructure.py`, that 
 The resilience is obtained by many controls on the messages in the parsers in Node-RED, and by setting the `qos` in the Sensor MQTT client to 1, so every message is delivered at least one time. Thanks to the fact that we choose to save the timestamp for each registered data, we can now differentiate between possible data sent in the same moment (say with a reconnection situation).
 
 ### User-Friendly Design
-
-TODO: UI with customizable thresholds
 
 The user-friendly design was obtained by separating every component and connecting them using Node-RED and Docker injection with Enviroment variables, so no connection strings of complicated queries are present in the files. Also, we decided to build a simple user interface to customize thresholds or follow a single parameter while the system is running.
 

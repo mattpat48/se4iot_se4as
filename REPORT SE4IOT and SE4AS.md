@@ -4,6 +4,10 @@
 
 ---
 
+TODO: aggiungere dinamicità dei parametri (MQTT topics, ed eventualmente location e tipi di sensori iniettati ?)
+TODO: aggiungere yml files per setup immediato
+TODO: grafana
+
 ## SE4IOT Functional Requirements
 
 ### Sensor Integration

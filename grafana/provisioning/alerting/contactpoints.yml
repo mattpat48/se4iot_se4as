@@ -1,0 +1,10 @@
+apiVersion: 1
+contactPoints:
+  - orgId: 1
+    name: IoT Alert Notifications
+    receivers:
+      - uid: iot-default-email
+        type: email
+        settings:
+          addresses: admin@smartcity.local
+          singleEmail: true

@@ -18,7 +18,11 @@
             }
         },
         "debug": {
-            "filter": "filterSelected"
+            "filter": "filterAll",
+            "filteredNodes": [
+                "eaca2a9816b18617",
+                "c6016708cfcabcb3"
+            ]
         }
     }
 }

@@ -113,7 +113,7 @@ class SimulatedSensor:
 
     def tick(self):
         # More realistic generation: lower volatility usually, with occasional peaks
-        if random.random() < 0.20:  # 5% chance of anomaly/peak
+        if random.random() < 0.10:  # 5% chance of anomaly/peak
             # Peak event: significantly larger change
             change = random.uniform(-self.volatility * 3, self.volatility * 3)
         else:

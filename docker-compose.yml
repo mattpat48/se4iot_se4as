@@ -91,6 +91,7 @@ services:
       - MQTT_PORT=1883
       - MQTT_USERNAME=admin
       - MQTT_PASSWORD=adminpassword123
+      - RESTORE_SESSION=true
     networks:
       - iot_net
     volumes:
@@ -112,6 +113,7 @@ services:
       - MQTT_PORT=1883
       - MQTT_USERNAME=admin
       - MQTT_PASSWORD=adminpassword123
+      - RESTORE_SESSION=true
     networks:
       - iot_net
     volumes:
@@ -128,6 +130,7 @@ services:
       - MQTT_PORT=1883
       - MQTT_USERNAME=admin
       - MQTT_PASSWORD=adminpassword123
+      - RESTORE_SESSION=true
     networks:
       - iot_net
     volumes:

@@ -10,6 +10,7 @@ MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
 MQTT_USER = os.getenv("MQTT_USERNAME", "admin")
 MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "adminpassword123")
+RESTORE_SESSION = os.getenv("RESTORE_SESSION", "true").lower() == "true"
 
 st.set_page_config(page_title="IoT Control Panel", layout="wide")
 st.title("🎛️ IoT System Control Panel")
@@ -18,12 +19,35 @@ st.title("🎛️ IoT System Control Panel")
 @st.cache_resource
 def get_mqtt_client():
     client = mqtt.Client()
+    # Storage for incoming retained configs
+    client.external_config = {}
+
+    def on_message(c, userdata, msg):
+        try:
+            payload = json.loads(msg.payload.decode())
+            if msg.topic == "City/update/locations":
+                c.external_config["locations"] = payload.get("locations")
+            elif msg.topic == "City/update/config":
+                if "sensor_params" in payload:
+                    c.external_config["sensor_params"] = payload["sensor_params"]
+                if "sensors_per_type" in payload:
+                    c.external_config["sensors_per_type"] = payload["sensors_per_type"]
+            elif msg.topic == "City/update/thresholds":
+                c.external_config["thresholds"] = payload.get("thresholds")
+        except Exception:
+            pass
+    
+    client.on_message = on_message
+
     if MQTT_USER and MQTT_PASSWORD:
         client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
     
     try:
         client.connect(MQTT_BROKER, MQTT_PORT, 60)
+        client.subscribe("City/update/#")
         client.loop_start()
+        if RESTORE_SESSION:
+            time.sleep(0.5) # Wait for retained messages
         return client
     except Exception as e:
         st.error(f"Could not connect to MQTT Broker: {e}")
@@ -31,13 +55,22 @@ def get_mqtt_client():
 
 client = get_mqtt_client()
 
+def get_initial_config(key, default_val):
+    if RESTORE_SESSION and client and hasattr(client, 'external_config'):
+        val = client.external_config.get(key)
+        if val is not None:
+            return val
+    return default_val
+
 # --- Session State Initialization ---
 if 'sensor_params' not in st.session_state:
-    st.session_state.sensor_params = list(ds.SENSOR_PARAMS)
+    st.session_state.sensor_params = get_initial_config('sensor_params', list(ds.SENSOR_PARAMS))
 if 'sensors_per_type' not in st.session_state:
-    st.session_state.sensors_per_type = ds.SENSORS_PER_TYPE
+    st.session_state.sensors_per_type = get_initial_config('sensors_per_type', ds.SENSORS_PER_TYPE)
 if 'thresholds' not in st.session_state:
-    st.session_state.thresholds = dict(ds.THRESHOLDS)
+    st.session_state.thresholds = get_initial_config('thresholds', dict(ds.THRESHOLDS))
+if 'locations_list' not in st.session_state:
+    st.session_state.locations_list = get_initial_config('locations', list(ds.LOCATIONS))
 
 # --- UI Layout ---
 
@@ -47,12 +80,13 @@ with col1:
     st.subheader("📍 Location Management")
     st.info("Edit the list of locations where sensors are deployed.")
     
-    # Default locations
-    default_locs = "Road, Square, Park"
+    # Locations from session state
+    default_locs = ", ".join(st.session_state.locations_list)
     locations_input = st.text_area("Locations (comma separated)", value=default_locs)
     
     if st.button("Update Locations"):
         loc_list = [x.strip() for x in locations_input.split(',') if x.strip()]
+        st.session_state.locations_list = loc_list
         payload = {"locations": loc_list}
         if client:
             client.publish("City/update/locations", json.dumps(payload), retain=True, qos=1)

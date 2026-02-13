@@ -7,6 +7,8 @@
 TODO: aggiungere dinamicità dei parametri (MQTT topics, ed eventualmente location e tipi di sensori iniettati ?)
 TODO: aggiungere yml files per setup immediato
 TODO: grafana
+TODO: IMPORTANTE!!! I THRESHOLD CONFIGURATI E MODIFICABILI DEVONO VEDERSI PURE SU GRAFANA
+TODO: inserire una parte di calcolo di eventi (tipo umidità molto bassa + temperatura molto alta + noise level alto = incendio, ad esempio)
 
 ## SE4IOT Functional Requirements
 
@@ -27,6 +29,11 @@ Sensor include in the published MQTT package:
 - `sensorid` → a unique identifier (in our case, we choose a simple wording of “sensor_x” to keep the package readable) assigned to each sensor
 - `value` → the generated value
 - `timestamp` → the registered timestamp of the data; we chose to save the timestamp at the generation to have more precise time events (instead of using the timestamp of the registration in the database)
+
+We also addressed a specific problem regarding the persistence of the configuration. Since MQTT retains the last message sent to a topic (to allow new subscribers to receive the latest configuration), the system would "remember" changes made via UI even after a full restart, which was problematic for testing.
+To fix this, we introduced a `RESTORE_SESSION` environment variable in the `sensors` container.
+- If set to `true` (default), the system accepts retained messages, restoring the previous session's state (resilience).
+- If set to `false`, the system ignores retained configuration messages at startup, ensuring a clean start using only the defaults defined in `datastructure.py`.
 
 ### Communication Protocols
 

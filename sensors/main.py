@@ -16,6 +16,7 @@ influx_url = os.getenv("INFLUXDB_URL", "http://influxdb:8086")
 influx_token = os.getenv("INFLUXDB_TOKEN", "my-super-secret-auth-token")
 influx_org = os.getenv("INFLUXDB_ORG", "iot_org")
 influx_bucket = os.getenv("INFLUXDB_BUCKET", "iot_bucket")
+restore_session = os.getenv("RESTORE_SESSION", "true").lower() == "true"
 
 print(f"Sensors container started. Connecting to {mqtt_broker}...", flush=True)
 
@@ -58,6 +59,12 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     try:
+        print(f"Received configuration update from {msg.topic} (Retained: {msg.retain})", flush=True)
+        
+        if not restore_session and msg.retain:
+            print("Ignoring retained configuration as RESTORE_SESSION is false", flush=True)
+            return
+            
         if msg.topic == "City/update/locations":
             payload = json.loads(msg.payload.decode())
             if "locations" in payload:
@@ -101,11 +108,18 @@ class SimulatedSensor:
         self.min_v = min_v
         self.max_v = max_v
         self.volatility = volatility
-        self.value = random.uniform(min_v, max_v)
+        # Start in the lower half of the range to avoid starting above potential thresholds
+        self.value = random.uniform(min_v, min_v + (max_v - min_v) * 0.5)
 
     def tick(self):
-        # Random walk with volatility
-        change = random.uniform(-self.volatility, self.volatility)
+        # More realistic generation: lower volatility usually, with occasional peaks
+        if random.random() < 0.05:  # 5% chance of anomaly/peak
+            # Peak event: significantly larger change
+            change = random.uniform(-self.volatility * 3, self.volatility * 3)
+        else:
+            # Normal fluctuation: reduced volatility for smoother curves
+            change = random.uniform(-self.volatility * 0.2, self.volatility * 0.2)
+
         self.value += change
         # Keep value within bounds
         self.value = max(self.min_v, min(self.value, self.max_v))

@@ -1,0 +1,271 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: IoT Sensor Alerts
+    folder: IoT Alerts
+    interval: 1m
+    rules:
+      # ─── Temperature Alert ───
+      - uid: iot-temperature-alert
+        title: "🌡️ High Temperature"
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: P1809F7CD0C757291
+            model:
+              refId: A
+              query: |
+                from(bucket: "iot_bucket")
+                  |> range(start: -5m)
+                  |> filter(fn: (r) => r._measurement == "sensors" and r._field == "°C")
+                  |> group()
+                  |> mean()
+                  |> keep(columns: ["_value"])
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 30
+              refId: C
+        noDataState: NoData
+        execErrState: Error
+        for: 2m
+        labels:
+          severity: warning
+          sensor_type: temperature
+        annotations:
+          summary: "Temperature exceeds 30°C threshold"
+          description: "Average temperature has exceeded the 30°C safety threshold for more than 2 minutes"
+
+      # ─── Humidity Alert ───
+      - uid: iot-humidity-alert
+        title: "💧 High Humidity"
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: P1809F7CD0C757291
+            model:
+              refId: A
+              query: |
+                from(bucket: "iot_bucket")
+                  |> range(start: -5m)
+                  |> filter(fn: (r) => r._measurement == "sensors" and r._field == "%")
+                  |> group()
+                  |> mean()
+                  |> keep(columns: ["_value"])
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 80
+              refId: C
+        noDataState: NoData
+        execErrState: Error
+        for: 2m
+        labels:
+          severity: warning
+          sensor_type: humidity
+        annotations:
+          summary: "Humidity exceeds 80% threshold"
+          description: "Average humidity has exceeded the 80% comfort threshold for more than 2 minutes"
+
+      # ─── CO₂ Alert ───
+      - uid: iot-co2-alert
+        title: "🌫️ High CO₂"
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: P1809F7CD0C757291
+            model:
+              refId: A
+              query: |
+                from(bucket: "iot_bucket")
+                  |> range(start: -5m)
+                  |> filter(fn: (r) => r._measurement == "sensors" and r._field == "ppm")
+                  |> group()
+                  |> mean()
+                  |> keep(columns: ["_value"])
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 1000
+              refId: C
+        noDataState: NoData
+        execErrState: Error
+        for: 2m
+        labels:
+          severity: critical
+          sensor_type: co2
+        annotations:
+          summary: "CO₂ exceeds 1000 ppm threshold"
+          description: "Average CO₂ concentration has exceeded the 1000 ppm safety threshold for more than 2 minutes"
+
+      # ─── Traffic Speed Alert ───
+      - uid: iot-traffic-alert
+        title: "🚗 High Traffic Speed"
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: P1809F7CD0C757291
+            model:
+              refId: A
+              query: |
+                from(bucket: "iot_bucket")
+                  |> range(start: -5m)
+                  |> filter(fn: (r) => r._measurement == "sensors" and r._field == "km/h")
+                  |> group()
+                  |> mean()
+                  |> keep(columns: ["_value"])
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 80
+              refId: C
+        noDataState: NoData
+        execErrState: Error
+        for: 2m
+        labels:
+          severity: warning
+          sensor_type: traffic_speed
+        annotations:
+          summary: "Traffic speed exceeds 80 km/h threshold"
+          description: "Average traffic speed has exceeded the 80 km/h safety threshold for more than 2 minutes"
+
+      # ─── Noise Level Alert ───
+      - uid: iot-noise-alert
+        title: "🔊 High Noise Level"
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: P1809F7CD0C757291
+            model:
+              refId: A
+              query: |
+                from(bucket: "iot_bucket")
+                  |> range(start: -5m)
+                  |> filter(fn: (r) => r._measurement == "sensors" and r._field == "dB")
+                  |> group()
+                  |> mean()
+                  |> keep(columns: ["_value"])
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 85
+              refId: C
+        noDataState: NoData
+        execErrState: Error
+        for: 2m
+        labels:
+          severity: warning
+          sensor_type: noise_level
+        annotations:
+          summary: "Noise level exceeds 85 dB threshold"
+          description: "Average noise level has exceeded the 85 dB safety threshold for more than 2 minutes"

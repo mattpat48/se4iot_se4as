@@ -2,7 +2,10 @@
   "annotations": {
     "list": [
       {
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "P1809F7CD0C757291"
+        },
         "enable": true,
         "hide": false,
         "iconColor": "#F2495C",
@@ -13,7 +16,10 @@
         }
       },
       {
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "P1809F7CD0C757291"
+        },
         "enable": true,
         "hide": false,
         "iconColor": "#73BF69",
@@ -33,575 +39,1755 @@
   "panels": [
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 50,
+      "panels": [],
+      "title": "🗺️ Smart City Map — L'Aquila",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 25
+              },
+              {
+                "color": "#FF9830",
+                "value": 30
+              },
+              {
+                "color": "#F2495C",
+                "value": 35
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 14,
+        "x": 0,
+        "y": 1
+      },
+      "id": 51,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "osm-standard"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": true,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "field": "temperature",
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.85,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "field": "temperature",
+                  "fixed": 14,
+                  "max": 30,
+                  "min": 14
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "text": {
+                  "field": "location",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "textConfig": {
+                  "fontSize": 14,
+                  "offsetX": 0,
+                  "offsetY": -25,
+                  "textAlign": "center",
+                  "textBaseline": "bottom"
+                }
+              }
+            },
+            "location": {
+              "mode": "coords",
+              "latitude": "latitude",
+              "longitude": "longitude"
+            },
+            "name": "Temperature Halo",
+            "tooltip": true,
+            "type": "markers"
+          },
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixed": "#FFFFFF"
+                },
+                "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 8
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/square.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                }
+              }
+            },
+            "location": {
+              "mode": "coords",
+              "latitude": "latitude",
+              "longitude": "longitude"
+            },
+            "name": "Sensor Icon",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "coords",
+          "lat": 42.351,
+          "lon": 13.3959,
+          "zoom": 15
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r._field == \"lat\" or r._field == \"lon\" or r._field == \"°C\" or r._field == \"ppm\" or r._field == \"dB\")\n  |> group(columns: [\"location\", \"_field\"])\n  |> last()\n  |> group(columns: [\"location\"])\n  |> pivot(rowKey: [\"location\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> filter(fn: (r) => r.lat > 0.0 and r.lon > 0.0)\n  |> rename(columns: {\"lat\": \"latitude\", \"lon\": \"longitude\", \"°C\": \"temperature\", \"ppm\": \"co2\", \"dB\": \"noise\"})",
+          "refId": "A"
+        }
+      ],
+      "title": "🗺️ Sensor Map — L'Aquila",
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#1F60C4",
+            "mode": "fixed"
+          },
+          "displayName": "Active Sensors",
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#1F60C4",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 14,
+        "y": 1
+      },
+      "id": 52,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name",
+        "wideLayout": false,
+        "orientation": "vertical"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"sensorid\"])\n  |> last()\n  |> group()\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Active Sensors\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "📡 Active Sensors",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "displayName": "Violations",
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 5
+              },
+              {
+                "color": "#F2495C",
+                "value": 20
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 1
+      },
+      "id": 53,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name",
+        "wideLayout": false,
+        "orientation": "vertical"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) =>\n    (r.type == \"temperature\" and r._value > 30.0) or\n    (r.type == \"humidity\" and r._value > 80.0) or\n    (r.type == \"co2\" and r._value > 1000.0) or\n    (r.type == \"traffic_speed\" and r._value > 80.0) or\n    (r.type == \"noise_level\" and r._value > 85.0)\n  )\n  |> group()\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Violations\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "🚨 Threshold Violations",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "displayName": "Air Quality",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#F2495C",
+                "value": null
+              },
+              {
+                "color": "#FF9830",
+                "value": 30
+              },
+              {
+                "color": "#EAB839",
+                "value": 50
+              },
+              {
+                "color": "#73BF69",
+                "value": 70
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 10,
+        "x": 14,
+        "y": 6
+      },
+      "id": 54,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true,
+        "orientation": "auto",
+        "minVizWidth": 75,
+        "minVizHeight": 75
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({_value: (1200.0 - r._value) / 8.0, _field: \"Air Quality Index\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "🌿 Environmental Quality Index",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic-by-name"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 14,
+        "y": 11
+      },
+      "id": 55,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "displayLabels": [
+          "name",
+          "percent"
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) =>\n    (r.type == \"temperature\" and r._value > 30.0) or\n    (r.type == \"humidity\" and r._value > 80.0) or\n    (r.type == \"co2\" and r._value > 1000.0) or\n    (r.type == \"traffic_speed\" and r._value > 80.0) or\n    (r.type == \"noise_level\" and r._value > 85.0)\n  )\n  |> group(columns: [\"type\"])\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: r.type}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "🥧 Violations by Type",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic-by-name"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 19,
+        "y": 11
+      },
+      "id": 56,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "displayLabels": [
+          "name",
+          "percent"
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: r.location}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "📍 Readings by Location",
+      "type": "piechart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
       "id": 100,
       "panels": [],
       "title": "📊 Live Sensor Status",
       "type": "row"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Temperature",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 25},
-            {"color": "#F2495C", "value": 30}
-          ]},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 25
+              },
+              {
+                "color": "#F2495C",
+                "value": 30
+              }
+            ]
+          },
           "unit": "celsius",
-          "min": 10, "max": 45
+          "min": 10,
+          "max": 45
         },
         "overrides": []
       },
-      "gridPos": {"h": 6, "w": 5, "x": 0, "y": 1},
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 0,
+        "y": 17
+      },
       "id": 1,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
         "orientation": "auto",
-        "minVizWidth": 75, "minVizHeight": 75
+        "minVizWidth": 75,
+        "minVizHeight": 75
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"°C\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Temperature\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"°C\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Temperature\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
       "title": "🌡️ Temperature",
       "type": "gauge"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Humidity",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 60},
-            {"color": "#F2495C", "value": 80}
-          ]},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 60
+              },
+              {
+                "color": "#F2495C",
+                "value": 80
+              }
+            ]
+          },
           "unit": "percent",
-          "min": 0, "max": 100
+          "min": 0,
+          "max": 100
         },
         "overrides": []
       },
-      "gridPos": {"h": 6, "w": 5, "x": 5, "y": 1},
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 5,
+        "y": 17
+      },
       "id": 2,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
         "orientation": "auto",
-        "minVizWidth": 75, "minVizHeight": 75
+        "minVizWidth": 75,
+        "minVizHeight": 75
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"%\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Humidity\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"%\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Humidity\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
       "title": "💧 Humidity",
       "type": "gauge"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "CO₂",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 800},
-            {"color": "#F2495C", "value": 1000}
-          ]},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 800
+              },
+              {
+                "color": "#F2495C",
+                "value": 1000
+              }
+            ]
+          },
           "unit": "ppm",
-          "min": 300, "max": 1500
+          "min": 300,
+          "max": 1500
         },
         "overrides": []
       },
-      "gridPos": {"h": 6, "w": 5, "x": 10, "y": 1},
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 10,
+        "y": 17
+      },
       "id": 3,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
         "orientation": "auto",
-        "minVizWidth": 75, "minVizHeight": 75
+        "minVizWidth": 75,
+        "minVizHeight": 75
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"CO2\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"CO2\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
       "title": "🌫️ CO₂",
       "type": "gauge"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Traffic",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 60},
-            {"color": "#F2495C", "value": 80}
-          ]},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 60
+              },
+              {
+                "color": "#F2495C",
+                "value": 80
+              }
+            ]
+          },
           "unit": "velocitykmh",
-          "min": 0, "max": 120
+          "min": 0,
+          "max": 120
         },
         "overrides": []
       },
-      "gridPos": {"h": 6, "w": 5, "x": 15, "y": 1},
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 15,
+        "y": 17
+      },
       "id": 4,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
         "orientation": "auto",
-        "minVizWidth": 75, "minVizHeight": 75
+        "minVizWidth": 75,
+        "minVizHeight": 75
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"km/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Traffic\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"km/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Traffic\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
       "title": "🚗 Traffic Speed",
       "type": "gauge"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Noise",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 70},
-            {"color": "#F2495C", "value": 85}
-          ]},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 70
+              },
+              {
+                "color": "#F2495C",
+                "value": 85
+              }
+            ]
+          },
           "unit": "dB",
-          "min": 30, "max": 110
+          "min": 30,
+          "max": 110
         },
         "overrides": []
       },
-      "gridPos": {"h": 6, "w": 4, "x": 20, "y": 1},
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 20,
+        "y": 17
+      },
       "id": 5,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
         "orientation": "auto",
-        "minVizWidth": 75, "minVizHeight": 75
+        "minVizWidth": 75,
+        "minVizHeight": 75
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"dB\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Noise\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"dB\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Noise\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
       "title": "🔊 Noise",
       "type": "gauge"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Temperature",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 25},
-            {"color": "#F2495C", "value": 30}
-          ]},
-          "unit": "celsius", "noValue": "No data"
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 25
+              },
+              {
+                "color": "#F2495C",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "celsius",
+          "noValue": "No data"
         },
         "overrides": []
       },
-      "gridPos": {"h": 3, "w": 5, "x": 0, "y": 7},
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 0,
+        "y": 23
+      },
       "id": 6,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "colorMode": "background_solid", "graphMode": "none",
-        "justifyMode": "center", "textMode": "value",
-        "wideLayout": false, "orientation": "horizontal"
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background_solid",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value",
+        "wideLayout": false,
+        "orientation": "horizontal"
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"°C\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Temperature\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
-      "title": "", "transparent": true,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"°C\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Temperature\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "transparent": true,
       "type": "stat"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Humidity",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 60},
-            {"color": "#F2495C", "value": 80}
-          ]},
-          "unit": "percent", "noValue": "No data"
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 60
+              },
+              {
+                "color": "#F2495C",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent",
+          "noValue": "No data"
         },
         "overrides": []
       },
-      "gridPos": {"h": 3, "w": 5, "x": 5, "y": 7},
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 5,
+        "y": 23
+      },
       "id": 7,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "colorMode": "background_solid", "graphMode": "none",
-        "justifyMode": "center", "textMode": "value",
-        "wideLayout": false, "orientation": "horizontal"
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background_solid",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value",
+        "wideLayout": false,
+        "orientation": "horizontal"
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"%\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Humidity\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
-      "title": "", "transparent": true,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"%\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Humidity\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "transparent": true,
       "type": "stat"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "CO₂",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 800},
-            {"color": "#F2495C", "value": 1000}
-          ]},
-          "unit": "ppm", "noValue": "No data"
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 800
+              },
+              {
+                "color": "#F2495C",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "ppm",
+          "noValue": "No data"
         },
         "overrides": []
       },
-      "gridPos": {"h": 3, "w": 5, "x": 10, "y": 7},
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 10,
+        "y": 23
+      },
       "id": 8,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "colorMode": "background_solid", "graphMode": "none",
-        "justifyMode": "center", "textMode": "value",
-        "wideLayout": false, "orientation": "horizontal"
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background_solid",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value",
+        "wideLayout": false,
+        "orientation": "horizontal"
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"CO2\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
-      "title": "", "transparent": true,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"CO2\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "transparent": true,
       "type": "stat"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Traffic",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 60},
-            {"color": "#F2495C", "value": 80}
-          ]},
-          "unit": "velocitykmh", "noValue": "No data"
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 60
+              },
+              {
+                "color": "#F2495C",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "velocitykmh",
+          "noValue": "No data"
         },
         "overrides": []
       },
-      "gridPos": {"h": 3, "w": 5, "x": 15, "y": 7},
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 15,
+        "y": 23
+      },
       "id": 9,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "colorMode": "background_solid", "graphMode": "none",
-        "justifyMode": "center", "textMode": "value",
-        "wideLayout": false, "orientation": "horizontal"
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background_solid",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value",
+        "wideLayout": false,
+        "orientation": "horizontal"
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"km/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Traffic\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
-      "title": "", "transparent": true,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"km/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Traffic\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "transparent": true,
       "type": "stat"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Noise",
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 70},
-            {"color": "#F2495C", "value": 85}
-          ]},
-          "unit": "dB", "noValue": "No data"
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 70
+              },
+              {
+                "color": "#F2495C",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "dB",
+          "noValue": "No data"
         },
         "overrides": []
       },
-      "gridPos": {"h": 3, "w": 4, "x": 20, "y": 7},
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 20,
+        "y": 23
+      },
       "id": 10,
       "options": {
-        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-        "colorMode": "background_solid", "graphMode": "none",
-        "justifyMode": "center", "textMode": "value",
-        "wideLayout": false, "orientation": "horizontal"
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background_solid",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value",
+        "wideLayout": false,
+        "orientation": "horizontal"
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"dB\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Noise\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-        "refId": "A"
-      }],
-      "title": "", "transparent": true,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"dB\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"Noise\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "transparent": true,
       "type": "stat"
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 10},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
       "id": 200,
       "panels": [],
       "title": "📈 Time Series Analysis",
       "type": "row"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto",
-            "drawStyle": "line", "fillOpacity": 15, "gradientMode": "opacity",
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
-            "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 4,
-            "showPoints": "never", "spanNulls": true,
-            "stacking": {"group": "A", "mode": "none"},
-            "thresholdsStyle": {"mode": "dashed"}
+          "color": {
+            "mode": "palette-classic"
           },
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "green", "value": null},
-            {"color": "red", "value": 30}
-          ]},
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 4,
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 30
+              }
+            ]
+          },
           "unit": "celsius"
         },
         "overrides": []
       },
-      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 11},
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 27
+      },
       "id": 11,
       "options": {
-        "legend": {"calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
-        "tooltip": {"mode": "single", "sort": "desc"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"°C\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"°C\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "refId": "A"
+        }
+      ],
       "title": "🌡️ Temperature",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto",
-            "drawStyle": "line", "fillOpacity": 15, "gradientMode": "opacity",
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
-            "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 4,
-            "showPoints": "never", "spanNulls": true,
-            "stacking": {"group": "A", "mode": "none"},
-            "thresholdsStyle": {"mode": "dashed"}
+          "color": {
+            "mode": "palette-classic"
           },
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "green", "value": null},
-            {"color": "red", "value": 80}
-          ]},
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 4,
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "percent"
         },
         "overrides": []
       },
-      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 11},
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 27
+      },
       "id": 12,
       "options": {
-        "legend": {"calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
-        "tooltip": {"mode": "single", "sort": "desc"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"%\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"%\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "refId": "A"
+        }
+      ],
       "title": "💧 Humidity",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto",
-            "drawStyle": "line", "fillOpacity": 15, "gradientMode": "opacity",
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
-            "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 4,
-            "showPoints": "never", "spanNulls": true,
-            "stacking": {"group": "A", "mode": "none"},
-            "thresholdsStyle": {"mode": "dashed"}
+          "color": {
+            "mode": "palette-classic"
           },
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "green", "value": null},
-            {"color": "red", "value": 1000}
-          ]},
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 4,
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
           "unit": "ppm"
         },
         "overrides": []
       },
-      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 11},
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 27
+      },
       "id": 13,
       "options": {
-        "legend": {"calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
-        "tooltip": {"mode": "single", "sort": "desc"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "refId": "A"
+        }
+      ],
       "title": "🌫️ Air Quality (CO₂)",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto",
-            "drawStyle": "line", "fillOpacity": 15, "gradientMode": "opacity",
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
-            "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 4,
-            "showPoints": "never", "spanNulls": true,
-            "stacking": {"group": "A", "mode": "none"},
-            "thresholdsStyle": {"mode": "dashed"}
+          "color": {
+            "mode": "palette-classic"
           },
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "green", "value": null},
-            {"color": "red", "value": 80}
-          ]},
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 4,
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "velocitykmh"
         },
         "overrides": []
       },
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 19},
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 35
+      },
       "id": 14,
       "options": {
-        "legend": {"calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
-        "tooltip": {"mode": "single", "sort": "desc"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"km/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"km/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "refId": "A"
+        }
+      ],
       "title": "🚗 Traffic Speed",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto",
-            "drawStyle": "line", "fillOpacity": 15, "gradientMode": "opacity",
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
-            "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 4,
-            "showPoints": "never", "spanNulls": true,
-            "stacking": {"group": "A", "mode": "none"},
-            "thresholdsStyle": {"mode": "dashed"}
+          "color": {
+            "mode": "palette-classic"
           },
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "green", "value": null},
-            {"color": "red", "value": 85}
-          ]},
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 4,
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
           "unit": "dB"
         },
         "overrides": []
       },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 19},
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 35
+      },
       "id": 15,
       "options": {
-        "legend": {"calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
-        "tooltip": {"mode": "single", "sort": "desc"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"dB\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"dB\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "refId": "A"
+        }
+      ],
       "title": "🔊 Noise Level",
       "type": "timeseries"
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 27},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
       "id": 300,
       "panels": [],
       "title": "🏙️ Analysis & Comparison",
       "type": "row"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "fillOpacity": 80,
             "gradientMode": "hue",
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
             "lineWidth": 1
           },
-          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
         },
         "overrides": []
       },
-      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 28},
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 44
+      },
       "id": 16,
       "options": {
         "barRadius": 0.15,
         "barWidth": 0.7,
         "fullHighlight": false,
         "groupWidth": 0.7,
-        "legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true},
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
         "orientation": "vertical",
         "showValue": "always",
         "stacking": "none",
-        "tooltip": {"mode": "single", "sort": "desc"},
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        },
         "xTickLabelRotation": 0
       },
       "targets": [
         {
-          "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
           "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"°C\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> mean()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Temperature\", location: r.location}))\n  |> keep(columns: [\"_value\", \"_field\", \"location\"])\n  |> yield(name: \"temperature\")",
           "refId": "A"
         },
         {
-          "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
           "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"%\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> mean()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Humidity\", location: r.location}))\n  |> keep(columns: [\"_value\", \"_field\", \"location\"])\n  |> yield(name: \"humidity\")",
           "refId": "B"
         },
         {
-          "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
           "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"km/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> mean()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Traffic\", location: r.location}))\n  |> keep(columns: [\"_value\", \"_field\", \"location\"])\n  |> yield(name: \"traffic\")",
           "refId": "C"
         },
         {
-          "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
           "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"dB\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> mean()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Noise\", location: r.location}))\n  |> keep(columns: [\"_value\", \"_field\", \"location\"])\n  |> yield(name: \"noise\")",
           "refId": "D"
         }
@@ -610,304 +1796,823 @@
       "type": "barchart"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "align": "center",
-            "cellOptions": {"type": "auto"},
+            "cellOptions": {
+              "type": "auto"
+            },
             "inspect": false,
             "filterable": true
           },
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "green", "value": null},
-            {"color": "red", "value": 80}
-          ]}
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
         "overrides": [
-          {"matcher": {"id": "byName", "options": "Sensor"}, "properties": [{"id": "custom.width", "value": 120}]},
-          {"matcher": {"id": "byName", "options": "Location"}, "properties": [{"id": "custom.width", "value": 100}]},
-          {"matcher": {"id": "byName", "options": "Type"}, "properties": [{"id": "custom.width", "value": 120}]},
-          {"matcher": {"id": "byName", "options": "Min"}, "properties": [{"id": "decimals", "value": 1}, {"id": "custom.cellOptions", "value": {"type": "color-text"}}, {"id": "color", "value": {"mode": "continuous-blues"}}]},
-          {"matcher": {"id": "byName", "options": "Max"}, "properties": [{"id": "decimals", "value": 1}, {"id": "custom.cellOptions", "value": {"type": "color-text"}}, {"id": "color", "value": {"mode": "continuous-reds"}}]},
-          {"matcher": {"id": "byName", "options": "Mean"}, "properties": [{"id": "decimals", "value": 1}, {"id": "custom.cellOptions", "value": {"type": "color-text"}}, {"id": "color", "value": {"mode": "continuous-greens"}}]},
-          {"matcher": {"id": "byName", "options": "Last"}, "properties": [{"id": "decimals", "value": 1}]}
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sensor"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Location"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Min"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-blues"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-reds"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mean"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-greens"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 1
+              }
+            ]
+          }
         ]
       },
-      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 28},
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 44
+      },
       "id": 17,
       "options": {
         "showHeader": true,
         "cellHeight": "sm",
-        "footer": {"show": false},
-        "sortBy": [{"displayName": "Max", "desc": true}]
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Max",
+            "desc": true
+          }
+        ]
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "data = from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"sensorid\", \"location\", \"type\"])\n\nmin_val = data |> min() |> map(fn: (r) => ({r with _field: \"Min\"}))\nmax_val = data |> max() |> map(fn: (r) => ({r with _field: \"Max\"}))\nmean_val = data |> mean() |> map(fn: (r) => ({r with _field: \"Mean\"}))\nlast_val = data |> last() |> map(fn: (r) => ({r with _field: \"Last\"}))\n\nunion(tables: [min_val, max_val, mean_val, last_val])\n  |> pivot(rowKey: [\"sensorid\", \"location\", \"type\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> keep(columns: [\"sensorid\", \"location\", \"type\", \"Min\", \"Max\", \"Mean\", \"Last\"])\n  |> rename(columns: {sensorid: \"Sensor\", location: \"Location\", type: \"Type\"})\n  |> sort(columns: [\"Max\"], desc: true)",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "data = from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"sensorid\", \"location\", \"type\"])\n\nmin_val = data |> min() |> map(fn: (r) => ({r with _field: \"Min\"}))\nmax_val = data |> max() |> map(fn: (r) => ({r with _field: \"Max\"}))\nmean_val = data |> mean() |> map(fn: (r) => ({r with _field: \"Mean\"}))\nlast_val = data |> last() |> map(fn: (r) => ({r with _field: \"Last\"}))\n\nunion(tables: [min_val, max_val, mean_val, last_val])\n  |> pivot(rowKey: [\"sensorid\", \"location\", \"type\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> keep(columns: [\"sensorid\", \"location\", \"type\", \"Min\", \"Max\", \"Mean\", \"Last\"])\n  |> rename(columns: {sensorid: \"Sensor\", location: \"Location\", type: \"Type\"})\n  |> sort(columns: [\"Max\"], desc: true)",
+          "refId": "A"
+        }
+      ],
       "title": "📋 Aggregate Statistics",
       "transformations": [
-        {"id": "organize", "options": {"indexByName": {"Location": 0, "Type": 1, "Sensor": 2, "Min": 3, "Mean": 4, "Max": 5, "Last": 6}}}
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Location": 0,
+              "Type": 1,
+              "Sensor": 2,
+              "Min": 3,
+              "Mean": 4,
+              "Max": 5,
+              "Last": 6
+            }
+          }
+        }
       ],
       "type": "table"
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 37},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 53
+      },
       "id": 400,
       "panels": [],
       "title": "🔥 Heatmap & Sensor Health",
       "type": "row"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "scheme"},
+          "color": {
+            "mode": "scheme"
+          },
           "custom": {
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
-            "scaleDistribution": {"type": "linear"}
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
           }
         },
         "overrides": []
       },
-      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 38},
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 54
+      },
       "id": 18,
       "options": {
         "calculate": true,
-        "calculation": {"xBuckets": {"mode": "size", "value": "1m"}, "yBuckets": {"mode": "count", "value": "20"}},
+        "calculation": {
+          "xBuckets": {
+            "mode": "size",
+            "value": "1m"
+          },
+          "yBuckets": {
+            "mode": "count",
+            "value": "20"
+          }
+        },
         "cellGap": 2,
         "color": {
-          "exponent": 0.5, "fill": "dark-orange", "mode": "scheme",
-          "reverse": false, "scale": "exponential", "scheme": "Oranges", "steps": 64
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Oranges",
+          "steps": 64
         },
-        "filterValues": {"le": 1e-9},
-        "legend": {"show": true},
-        "rowsFrame": {"layout": "auto"},
+        "filterValues": {
+          "le": 1e-09
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
         "showValue": "never",
-        "tooltip": {"show": true, "yHistogram": false},
-        "yAxis": {"axisPlacement": "left", "reverse": false}
+        "tooltip": {
+          "show": true,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": false
+        }
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
+          "refId": "A"
+        }
+      ],
       "title": "🔥 Value Distribution Heatmap",
       "type": "heatmap"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
-          "custom": {"fillOpacity": 90, "lineWidth": 0},
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 90,
+            "lineWidth": 0
+          },
           "mappings": [
-            {"type": "value", "options": {"0": {"text": "OK", "color": "#73BF69", "index": 0}, "1": {"text": "ALERT", "color": "#F2495C", "index": 1}}}
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "OK",
+                  "color": "#73BF69",
+                  "index": 0
+                },
+                "1": {
+                  "text": "ALERT",
+                  "color": "#F2495C",
+                  "index": 1
+                }
+              }
+            }
           ],
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#F2495C", "value": 1}
-          ]},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#F2495C",
+                "value": 1
+              }
+            ]
+          },
           "noValue": "N/A"
         },
         "overrides": []
       },
-      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 38},
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 54
+      },
       "id": 19,
       "options": {
         "showValue": "never",
         "mergeValues": true,
         "alignValue": "center",
         "rowHeight": 0.75,
-        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
-        "tooltip": {"mode": "single", "sort": "none"}
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\", \"type\"])\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _value: if (r.type == \"temperature\" and r._value > 30.0) or\n                 (r.type == \"humidity\" and r._value > 80.0) or\n                 (r.type == \"co2\" and r._value > 1000.0) or\n                 (r.type == \"traffic_speed\" and r._value > 80.0) or\n                 (r.type == \"noise_level\" and r._value > 85.0)\n              then 1 else 0,\n      _field: r.location + \" - \" + r.type\n    }))",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\", \"type\"])\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _value: if (r.type == \"temperature\" and r._value > 30.0) or\n                 (r.type == \"humidity\" and r._value > 80.0) or\n                 (r.type == \"co2\" and r._value > 1000.0) or\n                 (r.type == \"traffic_speed\" and r._value > 80.0) or\n                 (r.type == \"noise_level\" and r._value > 85.0)\n              then 1 else 0,\n      _field: r.location + \" - \" + r.type\n    }))",
+          "refId": "A"
+        }
+      ],
       "title": "🏥 Sensor Health Status",
       "type": "state-timeline"
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 47},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 63
+      },
       "id": 500,
       "panels": [],
       "title": "🚨 Alerts & Violations",
       "type": "row"
     },
     {
-      "datasource": {"type": "datasource", "uid": "grafana"},
-      "gridPos": {"h": 9, "w": 8, "x": 0, "y": 48},
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 64
+      },
       "id": 20,
       "options": {
         "maxItems": 30,
         "sortOrder": 1,
         "dashboardAlerts": false,
-        "stateFilter": {"firing": true, "pending": true, "noData": false, "normal": false, "error": true},
+        "stateFilter": {
+          "firing": true,
+          "pending": true,
+          "noData": false,
+          "normal": false,
+          "error": true
+        },
         "alertInstanceLabelFilter": ""
       },
       "title": "🔔 Active Alerts",
       "type": "alertlist"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "align": "center",
-            "cellOptions": {"type": "auto"},
+            "cellOptions": {
+              "type": "auto"
+            },
             "inspect": false,
             "filterable": true
           },
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#EAB839", "value": null},
-            {"color": "#F2495C", "value": 80}
-          ]}
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#EAB839",
+                "value": null
+              },
+              {
+                "color": "#F2495C",
+                "value": 80
+              }
+            ]
+          }
         },
         "overrides": [
-          {"matcher": {"id": "byName", "options": "Time"}, "properties": [{"id": "custom.width", "value": 180}]},
-          {"matcher": {"id": "byName", "options": "Sensor"}, "properties": [{"id": "custom.width", "value": 110}]},
-          {"matcher": {"id": "byName", "options": "Location"}, "properties": [{"id": "custom.width", "value": 100}]},
-          {"matcher": {"id": "byName", "options": "Type"}, "properties": [{"id": "custom.width", "value": 120}]},
-          {"matcher": {"id": "byName", "options": "Value"}, "properties": [
-            {"id": "decimals", "value": 1},
-            {"id": "custom.cellOptions", "value": {"type": "color-text"}},
-            {"id": "color", "value": {"mode": "continuous-reds"}}
-          ]},
-          {"matcher": {"id": "byName", "options": "Unit"}, "properties": [{"id": "custom.width", "value": 70}]}
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 180
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sensor"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Location"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-reds"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Unit"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          }
         ]
       },
-      "gridPos": {"h": 9, "w": 16, "x": 8, "y": 48},
+      "gridPos": {
+        "h": 9,
+        "w": 16,
+        "x": 8,
+        "y": 64
+      },
       "id": 21,
       "options": {
         "showHeader": true,
         "cellHeight": "sm",
-        "footer": {"show": true, "reducer": ["count"], "countRows": true},
-        "sortBy": [{"displayName": "Time", "desc": true}]
+        "footer": {
+          "show": true,
+          "reducer": [
+            "count"
+          ],
+          "countRows": true
+        },
+        "sortBy": [
+          {
+            "displayName": "Time",
+            "desc": true
+          }
+        ]
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) =>\n    (r.type == \"temperature\" and r._value > 30.0) or\n    (r.type == \"humidity\" and r._value > 80.0) or\n    (r.type == \"co2\" and r._value > 1000.0) or\n    (r.type == \"traffic_speed\" and r._value > 80.0) or\n    (r.type == \"noise_level\" and r._value > 85.0)\n  )\n  |> map(fn: (r) => ({\n      Time: string(v: r._time),\n      Value: r._value,\n      Unit: r._field,\n      Sensor: r.sensorid,\n      Location: r.location,\n      Type: r.type\n    }))\n  |> sort(columns: [\"Time\"], desc: true)\n  |> limit(n: 50)\n  |> keep(columns: [\"Time\", \"Value\", \"Unit\", \"Sensor\", \"Location\", \"Type\"])",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) =>\n    (r.type == \"temperature\" and r._value > 30.0) or\n    (r.type == \"humidity\" and r._value > 80.0) or\n    (r.type == \"co2\" and r._value > 1000.0) or\n    (r.type == \"traffic_speed\" and r._value > 80.0) or\n    (r.type == \"noise_level\" and r._value > 85.0)\n  )\n  |> map(fn: (r) => ({\n      Time: string(v: r._time),\n      Value: r._value,\n      Unit: r._field,\n      Sensor: r.sensorid,\n      Location: r.location,\n      Type: r.type\n    }))\n  |> sort(columns: [\"Time\"], desc: true)\n  |> limit(n: 50)\n  |> keep(columns: [\"Time\", \"Value\", \"Unit\", \"Sensor\", \"Location\", \"Type\"])",
+          "refId": "A"
+        }
+      ],
       "title": "📜 Threshold Violations Log",
       "type": "table"
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 57},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 73
+      },
       "id": 600,
       "panels": [],
       "title": "🔄 Dynamic Sensor Analysis (Repeat Panels)",
       "type": "row"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
-            "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto",
-            "drawStyle": "line", "fillOpacity": 10, "gradientMode": "opacity",
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
-            "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 4,
-            "showPoints": "never", "spanNulls": true,
-            "stacking": {"group": "A", "mode": "none"},
-            "thresholdsStyle": {"mode": "off"}
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 4,
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           }
         },
         "overrides": []
       },
-      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 58},
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 74
+      },
       "id": 22,
       "maxPerRow": 3,
       "repeat": "sensor_type",
       "repeatDirection": "h",
       "options": {
-        "legend": {"calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
-        "tooltip": {"mode": "single", "sort": "desc"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.type == \"${sensor_type}\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.type == \"${sensor_type}\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "refId": "A"
+        }
+      ],
       "title": "📈 $sensor_type",
       "type": "timeseries"
     },
     {
       "collapsed": true,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 66},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 82
+      },
       "id": 700,
       "repeat": "location",
       "repeatDirection": "h",
       "panels": [
         {
-          "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
           "fieldConfig": {
             "defaults": {
-              "color": {"mode": "thresholds"},
-              "thresholds": {"mode": "absolute", "steps": [
-                {"color": "#73BF69", "value": null},
-                {"color": "#EAB839", "value": 50},
-                {"color": "#F2495C", "value": 80}
-              ]},
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#73BF69",
+                    "value": null
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 50
+                  },
+                  {
+                    "color": "#F2495C",
+                    "value": 80
+                  }
+                ]
+              },
               "noValue": "No data"
             },
             "overrides": []
           },
-          "gridPos": {"h": 5, "w": 24, "x": 0, "y": 67},
+          "gridPos": {
+            "h": 5,
+            "w": 24,
+            "x": 0,
+            "y": 83
+          },
           "id": 23,
           "options": {
-            "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-            "colorMode": "background_solid", "graphMode": "none",
-            "justifyMode": "center", "textMode": "value_and_name",
-            "wideLayout": true, "orientation": "horizontal"
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "background_solid",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "textMode": "value_and_name",
+            "wideLayout": true,
+            "orientation": "horizontal"
           },
-          "targets": [{
-            "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-            "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location == \"${location}\")\n  |> group(columns: [\"type\"])\n  |> last()\n  |> map(fn: (r) => ({_value: r._value, _field: r.type}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-            "refId": "A"
-          }],
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "P1809F7CD0C757291"
+              },
+              "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location == \"${location}\")\n  |> group(columns: [\"type\"])\n  |> last()\n  |> map(fn: (r) => ({_value: r._value, _field: r.type}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+              "refId": "A"
+            }
+          ],
           "title": "📊 Latest Values",
           "type": "stat"
         },
         {
-          "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
           "fieldConfig": {
             "defaults": {
-              "color": {"mode": "palette-classic"},
+              "color": {
+                "mode": "palette-classic"
+              },
               "custom": {
-                "axisCenteredZero": false, "axisColorMode": "text", "axisPlacement": "auto",
-                "drawStyle": "line", "fillOpacity": 15, "gradientMode": "opacity",
-                "hideFrom": {"legend": false, "tooltip": false, "viz": false},
-                "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 4,
-                "showPoints": "never", "spanNulls": true,
-                "stacking": {"group": "A", "mode": "none"},
-                "thresholdsStyle": {"mode": "off"}
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisPlacement": "auto",
+                "drawStyle": "line",
+                "fillOpacity": 15,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "pointSize": 4,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
               }
             },
             "overrides": []
           },
-          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 72},
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 88
+          },
           "id": 24,
           "options": {
-            "legend": {"calcs": ["mean", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true},
-            "tooltip": {"mode": "single", "sort": "desc"}
+            "legend": {
+              "calcs": [
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "desc"
+            }
           },
-          "targets": [{
-            "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-            "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location == \"${location}\")\n  |> group(columns: [\"type\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.type}))",
-            "refId": "A"
-          }],
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "P1809F7CD0C757291"
+              },
+              "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location == \"${location}\")\n  |> group(columns: [\"type\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.type}))",
+              "refId": "A"
+            }
+          ],
           "title": "📈 Sensor Trends",
           "type": "timeseries"
         }
@@ -917,104 +2622,279 @@
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 80},
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 96
+      },
       "id": 800,
       "panels": [],
       "title": "📐 Data Transformations",
       "type": "row"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
-          "custom": {
-            "align": "center", "cellOptions": {"type": "auto"},
-            "inspect": false, "filterable": true
+          "color": {
+            "mode": "thresholds"
           },
-          "thresholds": {"mode": "absolute", "steps": [
-            {"color": "#73BF69", "value": null},
-            {"color": "#EAB839", "value": 50},
-            {"color": "#F2495C", "value": 80}
-          ]}
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "filterable": true
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 50
+              },
+              {
+                "color": "#F2495C",
+                "value": 80
+              }
+            ]
+          }
         },
         "overrides": [
-          {"matcher": {"id": "byName", "options": "Location"}, "properties": [{"id": "custom.width", "value": 110}]},
-          {"matcher": {"id": "byName", "options": "Type"}, "properties": [{"id": "custom.width", "value": 130}]},
-          {"matcher": {"id": "byName", "options": "Current Value"}, "properties": [
-            {"id": "decimals", "value": 1},
-            {"id": "custom.cellOptions", "value": {"type": "color-text"}},
-            {"id": "color", "value": {"mode": "continuous-reds"}}
-          ]},
-          {"matcher": {"id": "byName", "options": "Unit"}, "properties": [{"id": "custom.width", "value": 70}]}
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Location"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Current Value"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-reds"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Unit"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          }
         ]
       },
-      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 81},
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 97
+      },
       "id": 25,
       "options": {
-        "showHeader": true, "cellHeight": "sm",
-        "footer": {"show": true, "reducer": ["count"], "countRows": true},
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": true,
+          "reducer": [
+            "count"
+          ],
+          "countRows": true
+        },
         "sortBy": []
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> group(columns: [\"sensorid\", \"location\", \"type\", \"_field\"])\n  |> last()\n  |> map(fn: (r) => ({\n      Sensor: r.sensorid,\n      Location: r.location,\n      Type: r.type,\n      Unit: r._field,\n      Value: r._value,\n      _time: r._time\n    }))\n  |> keep(columns: [\"Sensor\", \"Location\", \"Type\", \"Unit\", \"Value\", \"_time\"])\n  |> group()",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> group(columns: [\"sensorid\", \"location\", \"type\", \"_field\"])\n  |> last()\n  |> map(fn: (r) => ({\n      Sensor: r.sensorid,\n      Location: r.location,\n      Type: r.type,\n      Unit: r._field,\n      Value: r._value,\n      _time: r._time\n    }))\n  |> keep(columns: [\"Sensor\", \"Location\", \"Type\", \"Unit\", \"Value\", \"_time\"])\n  |> group()",
+          "refId": "A"
+        }
+      ],
       "title": "🧮 Live Sensor Ranking (Transformed)",
       "transformations": [
         {
           "id": "sortBy",
-          "options": {"sort": [{"field": "Value", "desc": true}]}
+          "options": {
+            "sort": [
+              {
+                "field": "Value",
+                "desc": true
+              }
+            ]
+          }
         },
         {
           "id": "organize",
           "options": {
-            "excludeByName": {"_time": true},
-            "indexByName": {"Location": 0, "Type": 1, "Sensor": 2, "Value": 3, "Unit": 4},
-            "renameByName": {"Value": "Current Value"}
+            "excludeByName": {
+              "_time": true
+            },
+            "indexByName": {
+              "Location": 0,
+              "Type": 1,
+              "Sensor": 2,
+              "Value": 3,
+              "Unit": 4
+            },
+            "renameByName": {
+              "Value": "Current Value"
+            }
           }
         },
         {
           "id": "filterByValue",
           "options": {
-            "filters": [{"fieldName": "Current Value", "config": {"id": "greaterOrEqual", "options": {"value": 0}}}],
-            "type": "include", "match": "all"
+            "filters": [
+              {
+                "fieldName": "Current Value",
+                "config": {
+                  "id": "greaterOrEqual",
+                  "options": {
+                    "value": 0
+                  }
+                }
+              }
+            ],
+            "type": "include",
+            "match": "all"
           }
         }
       ],
       "type": "table"
     },
     {
-      "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
-            "fillOpacity": 70, "gradientMode": "opacity",
-            "hideFrom": {"legend": false, "tooltip": false, "viz": false},
+            "fillOpacity": 70,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
             "lineWidth": 1
           },
-          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
         },
         "overrides": []
       },
-      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 81},
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 97
+      },
       "id": 26,
       "options": {
-        "barRadius": 0.2, "barWidth": 0.7, "fullHighlight": false, "groupWidth": 0.7,
-        "legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true},
-        "orientation": "horizontal", "showValue": "always", "stacking": "none",
-        "tooltip": {"mode": "single", "sort": "desc"}, "xTickLabelRotation": 0
+        "barRadius": 0.2,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        },
+        "xTickLabelRotation": 0
       },
-      "targets": [{
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -15m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> group(columns: [\"location\", \"type\"])\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: r.type, location: r.location}))\n  |> keep(columns: [\"_value\", \"_field\", \"location\"])",
-        "refId": "A"
-      }],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -15m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r.type =~ /^${sensor_type:regex}$/)\n  |> group(columns: [\"location\", \"type\"])\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: r.type, location: r.location}))\n  |> keep(columns: [\"_value\", \"_field\", \"location\"])",
+          "refId": "A"
+        }
+      ],
       "title": "📊 Sample Count by Location & Type (Transformed)",
       "transformations": [
-        {"id": "sortBy", "options": {"sort": [{"field": "_value", "desc": true}]}}
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "_value",
+                "desc": true
+              }
+            ]
+          }
+        }
       ],
       "type": "barchart"
     }
@@ -1022,38 +2902,80 @@
   "refresh": "10s",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": ["iot", "smart-city"],
+  "tags": [
+    "iot",
+    "smart-city"
+  ],
   "templating": {
     "list": [
       {
         "allValue": ".*",
-        "current": {"selected": true, "text": ["All"], "value": ["$__all"]},
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"iot_bucket\", tag: \"location\")",
-        "hide": 0, "includeAll": true,
-        "label": "Location", "multi": true, "name": "location",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "P1809F7CD0C757291"
+        },
+        "definition": "from(bucket: \"iot_bucket\")\n  |> range(start: -15m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> keep(columns: [\"location\"])\n  |> distinct(column: \"location\")\n  |> sort(columns: [\"_value\"])",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Location",
+        "multi": true,
+        "name": "location",
         "options": [],
-        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"iot_bucket\", tag: \"location\")",
-        "refresh": 2, "regex": "", "skipUrlSync": false, "sort": 1, "type": "query"
+        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -15m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> keep(columns: [\"location\"])\n  |> distinct(column: \"location\")\n  |> sort(columns: [\"_value\"])",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       },
       {
         "allValue": ".*",
-        "current": {"selected": true, "text": ["All"], "value": ["$__all"]},
-        "datasource": {"type": "influxdb", "uid": "P1809F7CD0C757291"},
-        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"iot_bucket\", tag: \"type\")",
-        "hide": 0, "includeAll": true,
-        "label": "Sensor Type", "multi": true, "name": "sensor_type",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "P1809F7CD0C757291"
+        },
+        "definition": "from(bucket: \"iot_bucket\")\n  |> range(start: -15m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> keep(columns: [\"type\"])\n  |> distinct(column: \"type\")\n  |> sort(columns: [\"_value\"])",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Sensor Type",
+        "multi": true,
+        "name": "sensor_type",
         "options": [],
-        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"iot_bucket\", tag: \"type\")",
-        "refresh": 2, "regex": "", "skipUrlSync": false, "sort": 1, "type": "query"
+        "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -15m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> keep(columns: [\"type\"])\n  |> distinct(column: \"type\")\n  |> sort(columns: [\"_value\"])",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
-  "time": {"from": "now-15m", "to": "now"},
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
   "timepicker": {},
   "timezone": "",
   "title": "Smart City IoT Dashboard",
   "uid": "edp6s0q4w00g0a",
-  "version": 5,
+  "version": 6,
   "weekStart": ""
 }

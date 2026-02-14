@@ -27,6 +27,8 @@ def get_mqtt_client():
             payload = json.loads(msg.payload.decode())
             if msg.topic == "City/update/locations":
                 c.external_config["locations"] = payload.get("locations")
+                if "location_coords" in payload:
+                    c.external_config["location_coords"] = payload["location_coords"]
             elif msg.topic == "City/update/config":
                 if "sensor_params" in payload:
                     c.external_config["sensor_params"] = payload["sensor_params"]
@@ -71,26 +73,107 @@ if 'thresholds' not in st.session_state:
     st.session_state.thresholds = get_initial_config('thresholds', dict(ds.THRESHOLDS))
 if 'locations_list' not in st.session_state:
     st.session_state.locations_list = get_initial_config('locations', list(ds.LOCATIONS))
+if 'location_coords' not in st.session_state:
+    st.session_state.location_coords = get_initial_config('location_coords', dict(ds.LOCATION_COORDS))
 
-# --- UI Layout ---
+# =====================================================
+# SECTION 1: Location & Coordinates Management
+# =====================================================
+st.header("📍 Location & Coordinates Management")
 
-col1, col2, col3 = st.columns(3)
+loc_col1, loc_col2 = st.columns([1, 1])
 
-with col1:
-    st.subheader("📍 Location Management")
-    st.info("Edit the list of locations where sensors are deployed.")
+with loc_col1:
+    st.subheader("🗺️ Current Sensor Locations")
+    st.caption("Each location has GPS coordinates used by the sensors and shown on the Grafana map.")
     
-    # Locations from session state
-    default_locs = ", ".join(st.session_state.locations_list)
-    locations_input = st.text_area("Locations (comma separated)", value=default_locs)
+    # Show current locations with their coordinates in a nice table
+    if st.session_state.location_coords:
+        for loc_name, coords in list(st.session_state.location_coords.items()):
+            with st.container():
+                c1, c2, c3, c4 = st.columns([3, 2, 2, 1])
+                c1.markdown(f"**{loc_name}**")
+                c2.code(f"Lat: {coords['lat']:.4f}")
+                c3.code(f"Lon: {coords['lon']:.4f}")
+                if c4.button("🗑️", key=f"del_{loc_name}", help=f"Remove {loc_name}"):
+                    del st.session_state.location_coords[loc_name]
+                    st.session_state.locations_list = list(st.session_state.location_coords.keys())
+                    st.rerun()
+    else:
+        st.warning("No locations configured. Add one below!")
+
+with loc_col2:
+    st.subheader("➕ Add New Location")
+
+    # --- Quick add from L'Aquila presets ---
+    st.markdown("**🏛️ Scegli un luogo famoso de L'Aquila:**")
     
-    if st.button("Update Locations"):
-        loc_list = [x.strip() for x in locations_input.split(',') if x.strip()]
-        st.session_state.locations_list = loc_list
-        payload = {"locations": loc_list}
-        if client:
-            client.publish("City/update/locations", json.dumps(payload), retain=True, qos=1)
-            st.success(f"Sent update for {len(loc_list)} locations!")
+    # Filter out already-added presets
+    available_presets = {k: v for k, v in ds.LAQUILA_PRESETS.items() 
+                        if k not in st.session_state.location_coords}
+    
+    if available_presets:
+        preset_choice = st.selectbox(
+            "Seleziona un preset",
+            options=["— Seleziona —"] + list(available_presets.keys()),
+            key="preset_select"
+        )
+        
+        if preset_choice != "— Seleziona —":
+            preset_coords = available_presets[preset_choice]
+            st.info(f"📌 **{preset_choice}** — Lat: {preset_coords['lat']:.4f}, Lon: {preset_coords['lon']:.4f}")
+            
+            if st.button(f"✅ Aggiungi \"{preset_choice}\"", key="add_preset"):
+                st.session_state.location_coords[preset_choice] = preset_coords
+                st.session_state.locations_list = list(st.session_state.location_coords.keys())
+                st.success(f"Aggiunto: {preset_choice}!")
+                st.rerun()
+    else:
+        st.success("Tutti i preset di L'Aquila sono già stati aggiunti! 🎉")
+    
+    st.divider()
+    
+    # --- Manual coordinate entry ---
+    st.markdown("**✏️ Oppure inserisci coordinate manuali:**")
+    
+    manual_name = st.text_input("Nome location", placeholder="es. Piazza Navona", key="manual_loc_name")
+    mc1, mc2 = st.columns(2)
+    manual_lat = mc1.number_input("Latitudine", min_value=-90.0, max_value=90.0, 
+                                   value=42.3510, format="%.4f", key="manual_lat")
+    manual_lon = mc2.number_input("Longitudine", min_value=-180.0, max_value=180.0, 
+                                   value=13.3959, format="%.4f", key="manual_lon")
+    
+    if st.button("➕ Aggiungi Location Manuale", key="add_manual"):
+        if manual_name.strip():
+            st.session_state.location_coords[manual_name.strip()] = {
+                "lat": manual_lat, "lon": manual_lon
+            }
+            st.session_state.locations_list = list(st.session_state.location_coords.keys())
+            st.success(f"Aggiunto: {manual_name.strip()} ({manual_lat:.4f}, {manual_lon:.4f})")
+            st.rerun()
+        else:
+            st.error("Inserisci un nome per la location!")
+
+# --- Publish locations + coords button ---
+st.divider()
+if st.button("🚀 Pubblica Locations & Coordinate ai Sensori", type="primary", use_container_width=True):
+    payload = {
+        "locations": st.session_state.locations_list,
+        "location_coords": st.session_state.location_coords
+    }
+    if client:
+        client.publish("City/update/locations", json.dumps(payload), retain=True, qos=1)
+        st.success(f"✅ Pubblicato! {len(st.session_state.locations_list)} locations con coordinate inviate ai sensori.")
+    else:
+        st.error("MQTT non connesso!")
+
+# =====================================================
+# SECTION 2: Thresholds & Sensor Config (existing)
+# =====================================================
+st.divider()
+st.header("⚙️ Sensor & Alert Configuration")
+
+col2, col3 = st.columns(2)
 
 with col2:
     st.subheader("⚠️ Threshold Configuration")
@@ -126,7 +209,7 @@ with col2:
             st.success("Thresholds updated successfully!")
 
 with col3:
-    st.subheader("⚙️ Sensor Configuration")
+    st.subheader("🔧 Sensor Configuration")
     st.info("Add new sensor types and configure density.")
 
     # Sensors per Type
@@ -163,10 +246,16 @@ with col3:
 
 # --- System Status ---
 st.divider()
-st.subheader("System Status")
-if client:
-    st.success(f"Connected to MQTT Broker at {MQTT_BROKER}:{MQTT_PORT}")
-else:
-    st.error("Disconnected from MQTT Broker")
+st.subheader("📡 System Status")
+scol1, scol2, scol3 = st.columns(3)
+with scol1:
+    if client:
+        st.success(f"✅ MQTT: {MQTT_BROKER}:{MQTT_PORT}")
+    else:
+        st.error("❌ MQTT Disconnected")
+with scol2:
+    st.metric("Active Locations", len(st.session_state.locations_list))
+with scol3:
+    st.metric("Sensor Types", len(st.session_state.sensor_params))
 
 st.caption("Changes sent via MQTT topic 'City/update'. Ensure Sensors and Analyzer containers are running.")

@@ -18,6 +18,12 @@ services:
       - DOCKER_INFLUXDB_INIT_BUCKET=iot_bucket
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
       - DOCKER_INFLUXDB_INIT_RETENTION=1w
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     networks:
       - iot_net
 
@@ -57,7 +63,9 @@ services:
       - GF_UNIFIED_ALERTING_ENABLED=true
       - GF_ALERTING_ENABLED=false
     depends_on:
-      - influxdb
+      influxdb:
+        condition: service_healthy
+    restart: unless-stopped
     networks:
       - iot_net
 

@@ -5,7 +5,7 @@ import random
 import paho.mqtt.client as mqtt
 from datetime import datetime
 from datastructure import (
-    SensorData, LOCATIONS, SENSOR_PARAMS, SENSORS_PER_TYPE
+    SensorData, LOCATIONS, SENSOR_PARAMS, SENSORS_PER_TYPE, LOCATION_COORDS
 )
 
 # Load environment variables
@@ -25,6 +25,7 @@ current_locations = list(LOCATIONS)
 sensors = []
 current_sensor_params = list(SENSOR_PARAMS)
 current_sensors_per_type = SENSORS_PER_TYPE
+current_location_coords = dict(LOCATION_COORDS)
 
 def generate_sensors():
     global sensors, current_locations
@@ -70,7 +71,11 @@ def on_message(client, userdata, msg):
             if "locations" in payload:
                 global current_locations
                 current_locations = payload["locations"]
-                generate_sensors()
+            if "location_coords" in payload:
+                global current_location_coords
+                current_location_coords = payload["location_coords"]
+                print(f"Updated location coords: {current_location_coords}", flush=True)
+            generate_sensors()
         elif msg.topic == "City/update/config":
             payload = json.loads(msg.payload.decode())
             global current_sensor_params, current_sensors_per_type
@@ -108,6 +113,10 @@ class SimulatedSensor:
         self.min_v = min_v
         self.max_v = max_v
         self.volatility = volatility
+        # GPS coordinates from L'Aquila location mapping (dynamic)
+        coords = current_location_coords.get(location, LOCATION_COORDS.get(location, {"lat": 42.35, "lon": 13.39}))
+        self.lat = coords["lat"]
+        self.lon = coords["lon"]
         # Start in the lower half of the range to avoid starting above potential thresholds
         self.value = random.uniform(min_v, min_v + (max_v - min_v) * 0.5)
 
@@ -130,7 +139,9 @@ class SimulatedSensor:
             value=self.value,
             timestamp=datetime.now().isoformat(),
             type=self.type_name,
-            unit=self.unit
+            unit=self.unit,
+            lat=self.lat,
+            lon=self.lon
         )
         
         # Topic Logic: City/data/Location/DataType

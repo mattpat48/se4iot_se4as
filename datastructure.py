@@ -53,6 +53,8 @@ SENSOR_PARAMS = [
     {"type": "co2", "unit": "ppm", "min_v": 400.0, "max_v": 1200.0, "volatility": 10.0},
     {"type": "traffic_speed", "unit": "km/h", "min_v": 0.0, "max_v": 100.0, "volatility": 5.0},
     {"type": "noise_level", "unit": "dB", "min_v": 40.0, "max_v": 95.0, "volatility": 2.0},
+    {"type": "seismic", "unit": "Mw", "min_v": 0.0, "max_v": 9.0, "volatility": 0.05},
+    {"type": "rain_level", "unit": "mm/h", "min_v": 0.0, "max_v": 200.0, "volatility": 1.5},
 ]
 
 SENSORS_PER_TYPE = 1 # Number of sensors per type per location (can be adjusted)
@@ -62,5 +64,7 @@ THRESHOLDS = {
     "humidity": 80.0,
     "co2": 1000.0,
     "traffic_speed": 80.0,
-    "noise_level": 85.0
+    "noise_level": 85.0,
+    "seismic": 4.0,
+    "rain_level": 50.0
 }

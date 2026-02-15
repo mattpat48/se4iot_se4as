@@ -3,6 +3,7 @@ import paho.mqtt.client as mqtt
 import json
 import os
 import time
+from datetime import datetime
 import datastructure as ds
 
 # Environment Variables
@@ -36,6 +37,8 @@ def get_mqtt_client():
                     c.external_config["sensors_per_type"] = payload["sensors_per_type"]
             elif msg.topic == "City/update/thresholds":
                 c.external_config["thresholds"] = payload.get("thresholds")
+            elif msg.topic == "City/emergency":
+                c.external_config["active_emergency"] = payload
         except Exception:
             pass
     
@@ -46,7 +49,7 @@ def get_mqtt_client():
     
     try:
         client.connect(MQTT_BROKER, MQTT_PORT, 60)
-        client.subscribe("City/update/#")
+        client.subscribe([("City/update/#", 1), ("City/emergency", 1)])
         client.loop_start()
         if RESTORE_SESSION:
             time.sleep(0.5) # Wait for retained messages
@@ -257,5 +260,133 @@ with scol2:
     st.metric("Active Locations", len(st.session_state.locations_list))
 with scol3:
     st.metric("Sensor Types", len(st.session_state.sensor_params))
+
+# =====================================================
+# SECTION 3: Emergency Simulation
+# =====================================================
+st.divider()
+st.header("🚨 Emergency Simulation")
+st.caption("Simulate emergency scenarios to test the system's response. Emergencies force extreme sensor values at the selected location and are visible on the Grafana dashboard.")
+
+# Emergency scenarios definition
+EMERGENCY_SCENARIOS = {
+    "🔥 Incendio": {
+        "type": "fire",
+        "icon": "🔥",
+        "description": "Temperatura e CO₂ estremi, rumore alto",
+        "color": "#FF4500",
+        "effects": {"temperature": 75.0, "co2": 2500.0, "noise_level": 95.0}
+    },
+    "🌊 Alluvione": {
+        "type": "flood",
+        "icon": "🌊",
+        "description": "Pioggia estrema, umidità 99%, traffico fermo",
+        "color": "#1E90FF",
+        "effects": {"rain_level": 180.0, "humidity": 99.0, "traffic_speed": 0.0, "noise_level": 90.0}
+    },
+    "🏚️ Terremoto": {
+        "type": "earthquake",
+        "icon": "🏚️",
+        "description": "Attività sismica intensa, rumore, traffico fermo",
+        "color": "#8B4513",
+        "effects": {"seismic": 7.5, "noise_level": 110.0, "traffic_speed": 0.0, "co2": 1800.0}
+    },
+    "☣️ Fuga di Gas": {
+        "type": "gas_leak",
+        "icon": "☣️",
+        "description": "Concentrazione CO₂ estrema",
+        "color": "#32CD32",
+        "effects": {"co2": 3000.0, "noise_level": 70.0}
+    },
+    "🚗 Incidente Stradale": {
+        "type": "traffic_accident",
+        "icon": "🚗",
+        "description": "Traffico bloccato e rumore alto",
+        "color": "#FFD700",
+        "effects": {"traffic_speed": 0.0, "noise_level": 95.0}
+    },
+}
+
+# Check if there's an active emergency (from retained MQTT)
+active_emergency = None
+if client and hasattr(client, 'external_config'):
+    active_emergency = client.external_config.get("active_emergency")
+    if active_emergency and not active_emergency.get("active", False):
+        active_emergency = None
+
+# Show active emergency banner
+if active_emergency:
+    etype = active_emergency.get("type", "unknown")
+    eloc = active_emergency.get("location", "unknown")
+    etime = active_emergency.get("timestamp", "")
+    eseverity = active_emergency.get("severity", "critical")
+    # Find matching scenario for icon
+    eicon = "🚨"
+    for name, scenario in EMERGENCY_SCENARIOS.items():
+        if scenario["type"] == etype:
+            eicon = scenario["icon"]
+            break
+    st.error(f"{eicon} **EMERGENZA ATTIVA: {etype.upper().replace('_', ' ')}** — Location: **{eloc}** — Severity: **{eseverity}** — Since: {etime}")
+
+# Emergency location selector
+em_col1, em_col2 = st.columns([1, 2])
+
+with em_col1:
+    emergency_location = st.selectbox(
+        "📍 Location dell'emergenza",
+        options=st.session_state.locations_list if st.session_state.locations_list else ["No locations"],
+        key="emergency_location"
+    )
+    
+    emergency_severity = st.select_slider(
+        "⚠️ Severità",
+        options=["warning", "critical", "catastrophic"],
+        value="critical",
+        key="emergency_severity"
+    )
+
+with em_col2:
+    st.markdown("**Seleziona lo scenario di emergenza:**")
+    
+    # Display scenario buttons in a grid
+    for name, scenario in EMERGENCY_SCENARIOS.items():
+        bcol_info, bcol_btn = st.columns([3, 1])
+        with bcol_info:
+            st.markdown(f"**{name}** — {scenario['description']}")
+        with bcol_btn:
+            if st.button("▶️ Avvia", key=f"emergency_{scenario['type']}", use_container_width=True):
+                if client and emergency_location != "No locations":
+                    payload = {
+                        "type": scenario["type"],
+                        "location": emergency_location,
+                        "severity": emergency_severity,
+                        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "active": True,
+                        "effects": scenario["effects"]
+                    }
+                    client.publish("City/emergency", json.dumps(payload), retain=True, qos=1)
+                    # Set directly so banner shows immediately on rerun
+                    client.external_config["active_emergency"] = payload
+                    st.rerun()
+                else:
+                    st.error("MQTT non connesso o nessuna location disponibile!")
+
+# Stop emergency button
+st.divider()
+if st.button("🛑 FERMA EMERGENZA", type="primary", use_container_width=True, key="stop_emergency"):
+    if client:
+        stop_payload = {
+            "type": "none",
+            "location": "",
+            "severity": "none",
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "active": False,
+            "effects": {}
+        }
+        client.publish("City/emergency", json.dumps(stop_payload), retain=True, qos=1)
+        if hasattr(client, 'external_config'):
+            client.external_config["active_emergency"] = None
+        st.success("✅ Emergenza fermata. I sensori torneranno ai valori normali.")
+        st.rerun()
 
 st.caption("Changes sent via MQTT topic 'City/update'. Ensure Sensors and Analyzer containers are running.")

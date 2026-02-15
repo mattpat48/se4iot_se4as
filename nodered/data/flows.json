@@ -298,5 +298,82 @@
         "x": 410,
         "y": 500,
         "wires": []
+    },
+    {
+        "id": "em_mqtt_in_001",
+        "type": "mqtt in",
+        "z": "16c28e429371841e",
+        "name": "Emergency Events",
+        "topic": "City/emergency",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "b22a14a6c6c84ecf",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 620,
+        "wires": [
+            [
+                "em_debug_001",
+                "em_parser_001"
+            ]
+        ]
+    },
+    {
+        "id": "em_debug_001",
+        "type": "debug",
+        "z": "16c28e429371841e",
+        "name": "Debug EMERGENCY",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 410,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "em_parser_001",
+        "type": "function",
+        "z": "16c28e429371841e",
+        "name": "Emergency Parser",
+        "func": "var data = msg.payload;\nif (typeof data === 'string') {\n    try { data = JSON.parse(data); } catch (e) { return null; }\n}\n\nvar emType = data.type || 'unknown';\nvar location = data.location || 'unknown';\nvar severity = data.severity || 'none';\nvar active = data.active ? 1 : 0;\n\nmsg.measurement = 'emergencies';\nmsg.payload = [\n    {\n        active: active,\n        severity_level: severity === 'catastrophic' ? 3 : (severity === 'critical' ? 2 : (severity === 'warning' ? 1 : 0))\n    },\n    {\n        emergency_type: String(emType),\n        location: String(location),\n        severity: String(severity)\n    }\n];\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 680,
+        "wires": [
+            [
+                "em_influx_001"
+            ]
+        ]
+    },
+    {
+        "id": "em_influx_001",
+        "type": "influxdb out",
+        "z": "16c28e429371841e",
+        "influxdb": "c32de8e4c8baefe3",
+        "name": "Store Emergency",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "iot_org",
+        "bucket": "iot_bucket",
+        "x": 640,
+        "y": 680,
+        "wires": []
     }
 ]

@@ -404,7 +404,7 @@
         "h": 5,
         "w": 7,
         "x": 14,
-        "y": 6
+        "y": 15
       },
       "id": 54,
       "options": {
@@ -455,7 +455,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 6
+        "y": 15
       },
       "id": 31,
       "options": {
@@ -504,7 +504,7 @@
         "h": 4,
         "w": 5,
         "x": 14,
-        "y": 11
+        "y": 20
       },
       "id": 55,
       "options": {
@@ -564,7 +564,7 @@
         "h": 4,
         "w": 5,
         "x": 19,
-        "y": 11
+        "y": 20
       },
       "id": 56,
       "options": {
@@ -613,7 +613,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 24
       },
       "id": 100,
       "panels": [],
@@ -658,7 +658,7 @@
         "h": 6,
         "w": 4,
         "x": 0,
-        "y": 17
+        "y": 25
       },
       "id": 1,
       "options": {
@@ -726,7 +726,7 @@
         "h": 6,
         "w": 3,
         "x": 4,
-        "y": 17
+        "y": 25
       },
       "id": 2,
       "options": {
@@ -794,7 +794,7 @@
         "h": 6,
         "w": 3,
         "x": 7,
-        "y": 17
+        "y": 25
       },
       "id": 3,
       "options": {
@@ -862,7 +862,7 @@
         "h": 6,
         "w": 3,
         "x": 10,
-        "y": 17
+        "y": 25
       },
       "id": 4,
       "options": {
@@ -930,7 +930,7 @@
         "h": 6,
         "w": 3,
         "x": 13,
-        "y": 17
+        "y": 25
       },
       "id": 5,
       "options": {
@@ -998,7 +998,7 @@
         "h": 6,
         "w": 4,
         "x": 16,
-        "y": 17
+        "y": 25
       },
       "id": 60,
       "options": {
@@ -1070,7 +1070,7 @@
         "h": 6,
         "w": 4,
         "x": 20,
-        "y": 17
+        "y": 25
       },
       "id": 61,
       "options": {
@@ -1137,7 +1137,7 @@
         "h": 3,
         "w": 4,
         "x": 0,
-        "y": 23
+        "y": 31
       },
       "id": 6,
       "options": {
@@ -1206,7 +1206,7 @@
         "h": 3,
         "w": 3,
         "x": 4,
-        "y": 23
+        "y": 31
       },
       "id": 7,
       "options": {
@@ -1275,7 +1275,7 @@
         "h": 3,
         "w": 3,
         "x": 7,
-        "y": 23
+        "y": 31
       },
       "id": 8,
       "options": {
@@ -1344,7 +1344,7 @@
         "h": 3,
         "w": 3,
         "x": 10,
-        "y": 23
+        "y": 31
       },
       "id": 9,
       "options": {
@@ -1413,7 +1413,7 @@
         "h": 3,
         "w": 3,
         "x": 13,
-        "y": 23
+        "y": 31
       },
       "id": 10,
       "options": {
@@ -1482,7 +1482,7 @@
         "h": 3,
         "w": 4,
         "x": 16,
-        "y": 23
+        "y": 31
       },
       "id": 62,
       "options": {
@@ -1555,7 +1555,7 @@
         "h": 3,
         "w": 4,
         "x": 20,
-        "y": 23
+        "y": 31
       },
       "id": 63,
       "options": {
@@ -1593,7 +1593,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 34
       },
       "id": 200,
       "panels": [],
@@ -1656,7 +1656,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 27
+        "y": 35
       },
       "id": 11,
       "options": {
@@ -1743,7 +1743,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 27
+        "y": 35
       },
       "id": 12,
       "options": {
@@ -1830,7 +1830,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 27
+        "y": 35
       },
       "id": 13,
       "options": {
@@ -1917,7 +1917,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 35
+        "y": 43
       },
       "id": 14,
       "options": {
@@ -2004,7 +2004,7 @@
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 35
+        "y": 43
       },
       "id": 15,
       "options": {
@@ -2091,7 +2091,7 @@
         "h": 8,
         "w": 6,
         "x": 12,
-        "y": 35
+        "y": 43
       },
       "id": 64,
       "options": {
@@ -2178,7 +2178,7 @@
         "h": 8,
         "w": 6,
         "x": 18,
-        "y": 35
+        "y": 43
       },
       "id": 65,
       "options": {
@@ -2215,7 +2215,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 53
+        "y": 51
       },
       "id": 400,
       "panels": [],
@@ -2249,7 +2249,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 54
+        "y": 52
       },
       "id": 18,
       "options": {
@@ -2358,7 +2358,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 54
+        "y": 52
       },
       "id": 19,
       "options": {
@@ -2395,542 +2395,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 63
-      },
-      "id": 450,
-      "panels": [],
-      "title": "🆘 Emergency Simulation",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P1809F7CD0C757291"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "✅ ALL CLEAR",
-                  "color": "#73BF69",
-                  "index": 0
-                },
-                "1": {
-                  "text": "⚠️ WARNING",
-                  "color": "#EAB839",
-                  "index": 1
-                },
-                "2": {
-                  "text": "🔴 CRITICAL",
-                  "color": "#FF9830",
-                  "index": 2
-                },
-                "3": {
-                  "text": "🚨 CATASTROPHIC",
-                  "color": "#F2495C",
-                  "index": 3
-                }
-              }
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#73BF69",
-                "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 1
-              },
-              {
-                "color": "#FF9830",
-                "value": 2
-              },
-              {
-                "color": "#F2495C",
-                "value": 3
-              }
-            ]
-          },
-          "noValue": "✅ ALL CLEAR"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 0,
-        "y": 64
-      },
-      "id": 451,
-      "options": {
-        "colorMode": "background_solid",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value",
-        "wideLayout": false,
-        "orientation": "vertical"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P1809F7CD0C757291"
-          },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"severity_level\")\n  |> last()\n  |> map(fn: (r) => ({_value: if r._value > 0 then r._value else 0, _field: \"Emergency Status\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "🆘 Emergency Status",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P1809F7CD0C757291"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#73BF69",
-                "value": null
-              }
-            ]
-          },
-          "noValue": "—"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
-        "y": 64
-      },
-      "id": 452,
-      "options": {
-        "colorMode": "background_solid",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value",
-        "wideLayout": false,
-        "orientation": "vertical"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P1809F7CD0C757291"
-          },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> last()\n  |> filter(fn: (r) => r._value == 1)\n  |> map(fn: (r) => ({_value: r.emergency_type + \" @ \" + r.location, _field: \"Active Emergency\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "📍 Active Emergency Info",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P1809F7CD0C757291"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#73BF69",
-                "value": null
-              }
-            ]
-          },
-          "noValue": "0"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 64
-      },
-      "id": 453,
-      "options": {
-        "colorMode": "background_solid",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "reduceOptions": {
-          "calcs": [
-            "sum"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value_and_name",
-        "wideLayout": false,
-        "orientation": "vertical"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P1809F7CD0C757291"
-          },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> filter(fn: (r) => r._value == 1)\n  |> group()\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Total Events\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "📊 Emergency Events Count",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P1809F7CD0C757291"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic-by-name"
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 16,
-        "y": 64
-      },
-      "id": 454,
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "values": [
-            "value",
-            "percent"
-          ]
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": [
-            "sum"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "displayLabels": [
-          "name",
-          "percent"
-        ]
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P1809F7CD0C757291"
-          },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> filter(fn: (r) => r._value == 1)\n  |> group(columns: [\"emergency_type\"])\n  |> count()\n  |> group()\n  |> map(fn: (r) => ({_value: r._value, _field: r.emergency_type, _time: now()}))\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_time\"])\n  |> rename(columns: {\"fire\": \"🔥 Incendio\", \"flood\": \"🌊 Alluvione\", \"earthquake\": \"🏚️ Terremoto\", \"gas_leak\": \"☣️ Gas Leak\", \"traffic_accident\": \"🚗 Incidente\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "🥧 Emergencies by Type",
-      "type": "piechart"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P1809F7CD0C757291"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "fillOpacity": 90,
-            "lineWidth": 0
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "CLEAR",
-                  "color": "#73BF69",
-                  "index": 0
-                },
-                "1": {
-                  "text": "⚠️ WARNING",
-                  "color": "#EAB839",
-                  "index": 1
-                },
-                "2": {
-                  "text": "🔴 CRITICAL",
-                  "color": "#FF9830",
-                  "index": 2
-                },
-                "3": {
-                  "text": "🚨 CATASTROPHIC",
-                  "color": "#F2495C",
-                  "index": 3
-                }
-              }
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#73BF69",
-                "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 1
-              },
-              {
-                "color": "#FF9830",
-                "value": 2
-              },
-              {
-                "color": "#F2495C",
-                "value": 3
-              }
-            ]
-          },
-          "noValue": "N/A"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 68
-      },
-      "id": 455,
-      "options": {
-        "showValue": "auto",
-        "mergeValues": true,
-        "alignValue": "center",
-        "rowHeight": 0.85,
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P1809F7CD0C757291"
-          },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"severity_level\")\n  |> group(columns: [\"emergency_type\", \"location\"])\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.emergency_type + \" @ \" + r.location}))\n  |> keep(columns: [\"_time\", \"_value\", \"_field\"])\n  |> group(columns: [\"_field\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "📊 Emergency Timeline",
-      "type": "state-timeline"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P1809F7CD0C757291"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "center",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "inspect": false,
-            "filterable": true
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#73BF69",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Time"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 180
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Type"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 140
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Severity"
-            },
-            "properties": [
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "color-text"
-                }
-              },
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-reds"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Active"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 80
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "type": "value",
-                    "options": {
-                      "0": {
-                        "text": "❌ No",
-                        "color": "#73BF69"
-                      },
-                      "1": {
-                        "text": "✅ Yes",
-                        "color": "#F2495C"
-                      }
-                    }
-                  }
-                ]
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "color-text"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 68
-      },
-      "id": 456,
-      "options": {
-        "showHeader": true,
-        "cellHeight": "sm",
-        "footer": {
-          "show": true,
-          "reducer": [
-            "count"
-          ],
-          "countRows": true
-        },
-        "sortBy": [
-          {
-            "displayName": "Time",
-            "desc": true
-          }
-        ]
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P1809F7CD0C757291"
-          },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> map(fn: (r) => ({\n      Time: string(v: r._time),\n      Type: r.emergency_type,\n      Location: r.location,\n      Severity: r.severity,\n      Active: r._value\n    }))\n  |> sort(columns: [\"Time\"], desc: true)\n  |> limit(n: 50)\n  |> keep(columns: [\"Time\", \"Type\", \"Location\", \"Severity\", \"Active\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "📜 Emergency Event Log",
-      "type": "table"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 75
+        "y": 61
       },
       "id": 500,
       "panels": [],
@@ -2946,7 +2411,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 76
+        "y": 62
       },
       "id": 20,
       "options": {
@@ -2970,7 +2435,7 @@
         "h": 4,
         "w": 8,
         "x": 0,
-        "y": 81
+        "y": 67
       },
       "id": 30,
       "options": {
@@ -3104,7 +2569,7 @@
         "h": 9,
         "w": 16,
         "x": 8,
-        "y": 76
+        "y": 67
       },
       "id": 21,
       "options": {
@@ -3135,6 +2600,541 @@
         }
       ],
       "title": "📜 Threshold Violations Log",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 76
+      },
+      "id": 450,
+      "panels": [],
+      "title": "🆘 Emergency Simulation",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "✅ ALL CLEAR",
+                  "color": "#73BF69",
+                  "index": 0
+                },
+                "1": {
+                  "text": "⚠️ WARNING",
+                  "color": "#EAB839",
+                  "index": 1
+                },
+                "2": {
+                  "text": "🔴 CRITICAL",
+                  "color": "#FF9830",
+                  "index": 2
+                },
+                "3": {
+                  "text": "🚨 CATASTROPHIC",
+                  "color": "#F2495C",
+                  "index": 3
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 1
+              },
+              {
+                "color": "#FF9830",
+                "value": 2
+              },
+              {
+                "color": "#F2495C",
+                "value": 3
+              }
+            ]
+          },
+          "noValue": "✅ ALL CLEAR"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 77
+      },
+      "id": 451,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "wideLayout": false,
+        "orientation": "vertical"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"severity_level\")\n  |> group()\n  |> sort(columns: [\"_time\"])\n  |> last()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Emergency Status\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "🆘 Emergency Status",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "—"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 77
+      },
+      "id": 452,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "wideLayout": false,
+        "orientation": "vertical"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> group()\n  |> sort(columns: [\"_time\"])\n  |> last()\n  |> filter(fn: (r) => r._value == 1)\n  |> map(fn: (r) => ({_value: r.emergency_type + \" @ \" + r.location, _field: \"Active Emergency\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "📍 Active Emergency Info",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 77
+      },
+      "id": 453,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name",
+        "wideLayout": false,
+        "orientation": "vertical"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> filter(fn: (r) => r._value == 1)\n  |> group()\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Total Events\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "📊 Emergency Events Count",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic-by-name"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 77
+      },
+      "id": 454,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "displayLabels": [
+          "name",
+          "percent"
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> filter(fn: (r) => r._value == 1)\n  |> group(columns: [\"emergency_type\"])\n  |> count()\n  |> group()\n  |> map(fn: (r) => ({_value: r._value, _field: r.emergency_type, _time: now()}))\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_time\"])\n  |> rename(columns: {\"fire\": \"🔥 Incendio\", \"flood\": \"🌊 Alluvione\", \"earthquake\": \"🏚️ Terremoto\", \"gas_leak\": \"☣️ Gas Leak\", \"traffic_accident\": \"🚗 Incidente\"})",
+          "refId": "A"
+        }
+      ],
+      "title": "🥧 Emergencies by Type",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 90,
+            "lineWidth": 0
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "CLEAR",
+                  "color": "#73BF69",
+                  "index": 0
+                },
+                "1": {
+                  "text": "⚠️ WARNING",
+                  "color": "#EAB839",
+                  "index": 1
+                },
+                "2": {
+                  "text": "🔴 CRITICAL",
+                  "color": "#FF9830",
+                  "index": 2
+                },
+                "3": {
+                  "text": "🚨 CATASTROPHIC",
+                  "color": "#F2495C",
+                  "index": 3
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 1
+              },
+              {
+                "color": "#FF9830",
+                "value": 2
+              },
+              {
+                "color": "#F2495C",
+                "value": 3
+              }
+            ]
+          },
+          "noValue": "N/A"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 81
+      },
+      "id": 455,
+      "options": {
+        "showValue": "auto",
+        "mergeValues": true,
+        "alignValue": "center",
+        "rowHeight": 0.85,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"severity_level\")\n  |> filter(fn: (r) => r.emergency_type != \"none\")\n  |> group(columns: [\"emergency_type\", \"location\"])\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.emergency_type + \" @ \" + r.location}))\n  |> keep(columns: [\"_time\", \"_value\", \"_field\"])\n  |> group(columns: [\"_field\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "📊 Emergency Timeline",
+      "type": "state-timeline"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P1809F7CD0C757291"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "filterable": true
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 180
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 140
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Severity"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-reds"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Active"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "❌ No",
+                        "color": "#73BF69"
+                      },
+                      "1": {
+                        "text": "✅ Yes",
+                        "color": "#F2495C"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 81
+      },
+      "id": 456,
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": true,
+          "reducer": [
+            "count"
+          ],
+          "countRows": true
+        },
+        "sortBy": [
+          {
+            "displayName": "Time",
+            "desc": true
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P1809F7CD0C757291"
+          },
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> filter(fn: (r) => r.emergency_type != \"none\")\n  |> map(fn: (r) => ({\n      Time: string(v: r._time),\n      Type: r.emergency_type,\n      Location: r.location,\n      Severity: r.severity,\n      Active: r._value\n    }))\n  |> sort(columns: [\"Time\"], desc: true)\n  |> limit(n: 50)\n  |> keep(columns: [\"Time\", \"Type\", \"Location\", \"Severity\", \"Active\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "📜 Emergency Event Log",
       "type": "table"
     }
   ],

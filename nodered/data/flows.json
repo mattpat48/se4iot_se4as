@@ -218,7 +218,7 @@
         "bot": "912d48843f25675e",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 630,
+        "x": 690,
         "y": 220,
         "wires": [
             []
@@ -318,7 +318,8 @@
         "wires": [
             [
                 "em_debug_001",
-                "em_parser_001"
+                "em_parser_001",
+                "f01d5a803f11b214"
             ]
         ]
     },
@@ -432,8 +433,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 170,
-        "y": 760,
+        "x": 160,
+        "y": 860,
         "wires": [
             [
                 "thresh_default_fn_001"
@@ -452,11 +453,31 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 760,
+        "x": 430,
+        "y": 860,
         "wires": [
             [
                 "thresh_influx_001"
+            ]
+        ]
+    },
+    {
+        "id": "f01d5a803f11b214",
+        "type": "function",
+        "z": "16c28e429371841e",
+        "name": "Message Setup",
+        "func": "var chatId = env.get(\"TELEGRAM_CHAT_ID\");\nvar data = msg.payload;\nvar messageText = \"\";\n\nif (data.active === true) {\n    // 🔴 Messaggio di EMERGENZA (Pallino Rosso)\n    messageText = \"🔴 **EMERGENCY ALERT**\\n\\n\" +\n                  \"Type: \" + data.type.toUpperCase() + \"\\n\" +\n                  \"Location: \" + data.location + \"\\n\" +\n                  \"Severity: \" + data.severity.toUpperCase() + \"\\n\" +\n                  \"Timestamp: \" + data.timestamp + \"\\n\" +\n                  \"Status: ACTIVE\";\n} else {\n    // 🟢 Messaggio di RECOVERY (Pallino Verde)\n    var locationName = data.location && data.location !== \"\" ? data.location : \"General Area\";\n    \n    messageText = \"🟢 **RECOVERY STATUS**\\n\\n\" +\n                  \"The situation has been resolved.\\n\\n\" +\n                  \"Type: \" + data.type.toUpperCase() + \"\\n\" +\n                  \"Location: \" + locationName + \"\\n\" +\n                  \"Timestamp: \" + data.timestamp + \"\\n\" +\n                  \"Status: RECOVERED\";\n}\n\nmsg.payload = {\n    chatId: chatId,\n    type: 'message',\n    content: messageText\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 760,
+        "wires": [
+            [
+                "5ecafadf4c2b600c"
             ]
         ]
     }

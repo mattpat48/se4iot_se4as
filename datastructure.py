@@ -28,19 +28,19 @@ LOCATION_COORDS = {}
 
 # Famous L'Aquila locations presets (selectable from UI)
 LAQUILA_PRESETS = {
-    "Parco del Castello":          {"lat": 42.3538, "lon": 13.3917},
-    "Piazza del Duomo":            {"lat": 42.3506, "lon": 13.3964},
-    "Fontana delle 99 Cannelle":   {"lat": 42.3472, "lon": 13.3988},
-    "Basilica di Collemaggio":     {"lat": 42.3453, "lon": 13.4010},
-    "Corso Vittorio Emanuele II":  {"lat": 42.3498, "lon": 13.3995},
-    "Piazza del Palazzo":          {"lat": 42.3512, "lon": 13.3952},
-    "Villa Comunale":              {"lat": 42.3525, "lon": 13.3942},
-    "Forte Spagnolo":              {"lat": 42.3545, "lon": 13.3908},
-    "Porta Napoli":                {"lat": 42.3462, "lon": 13.4002},
-    "Piazza Santa Maria Paganica": {"lat": 42.3491, "lon": 13.3969},
-    "Stazione FS L'Aquila":        {"lat": 42.3558, "lon": 13.3728},
-    "Ospedale San Salvatore":      {"lat": 42.3672, "lon": 13.3563},
-    "Università L'Aquila (Coppito)": {"lat": 42.3681, "lon": 13.3491},
+    "Parco del Castello":          {"lat": 42.3555, "lon": 13.4045},
+    "Piazza del Duomo":            {"lat": 42.3498, "lon": 13.3996},
+    "Fontana delle 99 Cannelle":   {"lat": 42.3524, "lon": 13.3917},
+    "Basilica di Collemaggio":     {"lat": 42.3426, "lon": 13.4048},
+    "Corso Vittorio Emanuele II":  {"lat": 42.3520, "lon": 13.4010}, 
+    "Piazza del Palazzo":          {"lat": 42.3515, "lon": 13.3984},
+    "Villa Comunale":              {"lat": 42.3460, "lon": 13.4016},
+    "Forte Spagnolo":              {"lat": 42.3561, "lon": 13.4052},
+    "Porta Napoli":                {"lat": 42.3418, "lon": 13.4020},
+    "Piazza Santa Maria Paganica": {"lat": 42.3524, "lon": 13.3996},
+    "Stazione FS L'Aquila":        {"lat": 42.3547, "lon": 13.3860},
+    "Ospedale San Salvatore":      {"lat": 42.3682, "lon": 13.3535},  
+    "Università L'Aquila (Coppito)": {"lat": 42.3675, "lon": 13.3505},  
 }
 
 SENSOR_PARAMS = [
@@ -49,7 +49,7 @@ SENSOR_PARAMS = [
     {"type": "co2", "unit": "ppm", "min_v": 400.0, "max_v": 1200.0, "volatility": 10.0},
     {"type": "traffic_speed", "unit": "km/h", "min_v": 0.0, "max_v": 100.0, "volatility": 5.0},
     {"type": "noise_level", "unit": "dB", "min_v": 40.0, "max_v": 95.0, "volatility": 2.0},
-    {"type": "seismic", "unit": "Mw", "min_v": 0.0, "max_v": 9.0, "volatility": 0.05},
+    {"type": "seismic", "unit": "Mw", "min_v": 0.0, "max_v": 9.0, "volatility": 0.02},
     {"type": "rain_level", "unit": "mm/h", "min_v": 0.0, "max_v": 200.0, "volatility": 1.5},
 ]
 

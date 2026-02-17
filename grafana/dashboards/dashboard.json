@@ -348,7 +348,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "import \"influxdata/influxdb/schema\"\n\nthresholds = from(bucket: \"iot_bucket\")\n  |> range(start: -30d)\n  |> filter(fn: (r) => r._measurement == \"thresholds\")\n  |> filter(fn: (r) => r._field == \"value\")\n  |> group(columns: [\"type\"])\n  |> last()\n  |> group()\n\nsensors = from(bucket: \"iot_bucket\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r._field != \"lat\" and r._field != \"lon\")\n  |> group(columns: [\"sensorid\", \"type\"])\n  |> last()\n  |> group()\n\nj = join(tables: {s: sensors, t: thresholds}, on: [\"type\"])\n  |> filter(fn: (r) => r._value_s > r._value_t)\n  |> group(columns: [\"sensorid\"])\n  |> count()\n  |> group()\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Violations\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r._field != \"lat\" and r._field != \"lon\")\n  |> group(columns: [\"sensorid\", \"type\"])\n  |> last()\n  |> group()\n  |> filter(fn: (r) =>\n      (r.type == \"temperature\" and r._value > 30.0) or\n      (r.type == \"humidity\" and r._value > 80.0) or\n      (r.type == \"co2\" and r._value > 1000.0) or\n      (r.type == \"traffic_speed\" and r._value > 80.0) or\n      (r.type == \"noise_level\" and r._value > 85.0) or\n      (r.type == \"seismic\" and r._value > 4.0) or\n      (r.type == \"rain_level\" and r._value > 50.0)\n  )\n  |> group()\n  |> count()\n  |> map(fn: (r) => ({_value: r._value, _field: \"Violations\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
           "refId": "A"
         }
       ],
@@ -4123,7 +4123,7 @@
       },
       "id": 400,
       "panels": [],
-      "title": "🔥 Heatmap & Sensor Health",
+      "title": "📡 Heatmap & Sensor Liveness",
       "type": "row"
     },
     {
@@ -4203,11 +4203,11 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group()\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
+          "query": "import \"math\"\n\nfrom(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r._field != \"lat\" and r._field != \"lon\")\n  |> group(columns: [\"type\"])\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _value: if r.type == \"temperature\" then r._value / 30.0 * 100.0\n              else if r.type == \"humidity\" then r._value / 80.0 * 100.0\n              else if r.type == \"co2\" then r._value / 1000.0 * 100.0\n              else if r.type == \"traffic_speed\" then r._value / 80.0 * 100.0\n              else if r.type == \"noise_level\" then r._value / 85.0 * 100.0\n              else if r.type == \"seismic\" then r._value / 4.0 * 100.0\n              else if r.type == \"rain_level\" then r._value / 50.0 * 100.0\n              else r._value,\n      _field: r.type\n    }))\n  |> keep(columns: [\"_time\", \"_value\", \"_field\"])\n  |> group()",
           "refId": "A"
         }
       ],
-      "title": "🔥 Value Distribution Heatmap",
+      "title": "📈 Threshold % Heatmap",
       "type": "heatmap"
     },
     {
@@ -4229,12 +4229,12 @@
               "type": "value",
               "options": {
                 "0": {
-                  "text": "OK",
+                  "text": "✅ ONLINE",
                   "color": "#73BF69",
                   "index": 0
                 },
                 "1": {
-                  "text": "ALERT",
+                  "text": "❌ OFFLINE",
                   "color": "#F2495C",
                   "index": 1
                 }
@@ -4286,11 +4286,11 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\", \"type\"])\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _value: if (r.type == \"temperature\" and r._value > 30.0) or\n                 (r.type == \"humidity\" and r._value > 80.0) or\n                 (r.type == \"co2\" and r._value > 1000.0) or\n                 (r.type == \"traffic_speed\" and r._value > 80.0) or\n                 (r.type == \"noise_level\" and r._value > 85.0) or\n                 (r.type == \"seismic\" and r._value > 4.0) or\n                 (r.type == \"rain_level\" and r._value > 50.0)\n              then 1 else 0,\n      _field: r.location + \" — \" + r.type\n    }))\n  |> keep(columns: [\"_time\", \"_value\", \"_field\"])\n  |> group(columns: [\"_field\"])",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r._field != \"lat\" and r._field != \"lon\")\n  |> group(columns: [\"location\", \"type\"])\n  |> aggregateWindow(every: 1m, fn: count, createEmpty: true)\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _value: if r._value > 0 then 0 else 1,\n      _field: r.location + \" — \" + r.type\n    }))\n  |> keep(columns: [\"_time\", \"_value\", \"_field\"])\n  |> group(columns: [\"_field\"])",
           "refId": "A"
         }
       ],
-      "title": "🏥 Sensor Health Status",
+      "title": "📡 Sensor Liveness",
       "type": "state-timeline"
     },
     {
@@ -4403,12 +4403,13 @@
                   "type": "color-text"
                 }
               },
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-reds"
-                }
-              }
+       {
+  "id": "color",
+  "value": {
+    "mode": "fixed",
+    "fixedColor": "#FFFFFF"
+  }
+}
             ]
           },
           {

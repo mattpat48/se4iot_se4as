@@ -138,21 +138,33 @@ class SimulatedSensor:
             self.value = random.uniform(min_v, min_v + (max_v - min_v) * 0.5)
 
     def tick(self):
-        # More realistic generation: lower volatility usually, with occasional peaks
-        if random.random() < 0.10:  # 10% chance of anomaly/peak
-            # Peak event: significantly larger change
-            change = random.uniform(-self.volatility * 3, self.volatility * 3)
+        # Seismic sensor: realistic micro-tremor model
+        if self.type_name == "seismic":
+            roll = random.random()
+            if roll < 0.005:  # 0.5% chance — strong earthquake (4.0-7.0 Mw)
+                self.value = random.uniform(4.0, 7.0)
+            elif roll < 0.02:  # 1.5% chance — moderate event (2.0-4.0 Mw)
+                self.value = random.uniform(2.0, 4.0)
+            elif roll < 0.08:  # 6% chance — minor tremor (0.5-2.0 Mw)
+                self.value = random.uniform(0.5, 2.0)
+            else:  # 92% — background noise (0.0-0.5 Mw)
+                self.value = random.uniform(0.0, 0.5)
         else:
-            # Normal fluctuation: reduced volatility for smoother curves
-            change = random.uniform(-self.volatility * 0.2, self.volatility * 0.2)
+            # More realistic generation: lower volatility usually, with occasional peaks
+            if random.random() < 0.10:  # 10% chance of anomaly/peak
+                # Peak event: significantly larger change
+                change = random.uniform(-self.volatility * 3, self.volatility * 3)
+            else:
+                # Normal fluctuation: reduced volatility for smoother curves
+                change = random.uniform(-self.volatility * 0.2, self.volatility * 0.2)
 
-        # Mean reversion for sensors that naturally stay near minimum (seismic, rain)
-        if self.type_name in ("seismic", "rain_level"):
-            change += (self.min_v - self.value) * 0.3
+            # Mean reversion for sensors that naturally stay near minimum (rain)
+            if self.type_name == "rain_level":
+                change += (self.min_v - self.value) * 0.3
 
-        self.value += change
-        # Keep value within bounds
-        self.value = max(self.min_v, min(self.value, self.max_v))
+            self.value += change
+            # Keep value within bounds
+            self.value = max(self.min_v, min(self.value, self.max_v))
         
         # Emergency override: force extreme values if emergency is active at this location
         actual_value = self.value

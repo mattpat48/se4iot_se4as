@@ -94,7 +94,7 @@
       },
       "gridPos": {
         "h": 14,
-        "w": 14,
+        "w": 16,
         "x": 0,
         "y": 1
       },
@@ -254,8 +254,8 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 5,
-        "x": 14,
+        "w": 4,
+        "x": 16,
         "y": 1
       },
       "id": 52,
@@ -322,8 +322,8 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 5,
-        "x": 19,
+        "w": 4,
+        "x": 20,
         "y": 1
       },
       "id": 53,
@@ -396,9 +396,9 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 7,
-        "x": 14,
-        "y": 15
+        "w": 5,
+        "x": 16,
+        "y": 6
       },
       "id": 54,
       "options": {
@@ -421,7 +421,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> last()\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _field: \"CO2\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> last()\n  |> group()\n  |> mean()\n  |> map(fn: (r) => ({r with _value: if (1200.0 - r._value) / 800.0 * 100.0 > 100.0 then 100.0 else if (1200.0 - r._value) / 800.0 * 100.0 < 0.0 then 0.0 else (1200.0 - r._value) / 800.0 * 100.0, _field: \"Air Quality\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
           "refId": "A"
         }
       ],
@@ -449,7 +449,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 15
+        "y": 6
       },
       "id": 31,
       "options": {
@@ -482,72 +482,12 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P1809F7CD0C757291"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic-by-name"
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 19,
-        "y": 20
-      },
-      "id": 56,
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "values": [
-            "value",
-            "percent"
-          ]
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "displayLabels": [
-          "name",
-          "percent"
-        ]
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P1809F7CD0C757291"
-          },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r._field != \"lat\" and r._field != \"lon\")\n  |> group(columns: [\"location\"])\n  |> count()\n  |> group()\n  |> map(fn: (r) => ({_value: r._value, _field: r.location, _time: now()}))\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_time\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "📍 Readings by Location",
-      "type": "piechart"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 15
       },
       "id": 100,
       "panels": [],
@@ -592,7 +532,7 @@
         "h": 6,
         "w": 4,
         "x": 0,
-        "y": 25
+        "y": 16
       },
       "id": 1,
       "options": {
@@ -660,7 +600,7 @@
         "h": 6,
         "w": 3,
         "x": 4,
-        "y": 25
+        "y": 16
       },
       "id": 2,
       "options": {
@@ -728,7 +668,7 @@
         "h": 6,
         "w": 3,
         "x": 7,
-        "y": 25
+        "y": 16
       },
       "id": 3,
       "options": {
@@ -796,7 +736,7 @@
         "h": 6,
         "w": 3,
         "x": 10,
-        "y": 25
+        "y": 16
       },
       "id": 4,
       "options": {
@@ -864,7 +804,7 @@
         "h": 6,
         "w": 3,
         "x": 13,
-        "y": 25
+        "y": 16
       },
       "id": 5,
       "options": {
@@ -932,7 +872,7 @@
         "h": 6,
         "w": 4,
         "x": 16,
-        "y": 25
+        "y": 16
       },
       "id": 60,
       "options": {
@@ -1004,7 +944,7 @@
         "h": 6,
         "w": 4,
         "x": 20,
-        "y": 25
+        "y": 16
       },
       "id": 61,
       "options": {
@@ -1071,7 +1011,7 @@
         "h": 3,
         "w": 4,
         "x": 0,
-        "y": 31
+        "y": 22
       },
       "id": 6,
       "options": {
@@ -1140,7 +1080,7 @@
         "h": 3,
         "w": 3,
         "x": 4,
-        "y": 31
+        "y": 22
       },
       "id": 7,
       "options": {
@@ -1209,7 +1149,7 @@
         "h": 3,
         "w": 3,
         "x": 7,
-        "y": 31
+        "y": 22
       },
       "id": 8,
       "options": {
@@ -1278,7 +1218,7 @@
         "h": 3,
         "w": 3,
         "x": 10,
-        "y": 31
+        "y": 22
       },
       "id": 9,
       "options": {
@@ -1347,7 +1287,7 @@
         "h": 3,
         "w": 3,
         "x": 13,
-        "y": 31
+        "y": 22
       },
       "id": 10,
       "options": {
@@ -1416,7 +1356,7 @@
         "h": 3,
         "w": 4,
         "x": 16,
-        "y": 31
+        "y": 22
       },
       "id": 62,
       "options": {
@@ -1489,7 +1429,7 @@
         "h": 3,
         "w": 4,
         "x": 20,
-        "y": 31
+        "y": 22
       },
       "id": 63,
       "options": {
@@ -1527,7 +1467,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 25
       },
       "id": 200,
       "panels": [],
@@ -1872,7 +1812,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 35
+        "y": 26
       },
       "id": 11,
       "options": {
@@ -2249,7 +2189,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 35
+        "y": 26
       },
       "id": 12,
       "options": {
@@ -2626,7 +2566,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 35
+        "y": 26
       },
       "id": 13,
       "options": {
@@ -3003,7 +2943,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 43
+        "y": 34
       },
       "id": 14,
       "options": {
@@ -3380,7 +3320,7 @@
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 43
+        "y": 34
       },
       "id": 15,
       "options": {
@@ -3757,7 +3697,7 @@
         "h": 8,
         "w": 6,
         "x": 12,
-        "y": 43
+        "y": 34
       },
       "id": 64,
       "options": {
@@ -4134,7 +4074,7 @@
         "h": 8,
         "w": 6,
         "x": 18,
-        "y": 43
+        "y": 34
       },
       "id": 65,
       "options": {
@@ -4179,7 +4119,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 51
+        "y": 42
       },
       "id": 400,
       "panels": [],
@@ -4213,7 +4153,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 43
       },
       "id": 18,
       "options": {
@@ -4322,7 +4262,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 52
+        "y": 43
       },
       "id": 19,
       "options": {
@@ -4359,7 +4299,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 61
+        "y": 52
       },
       "id": 500,
       "panels": [],
@@ -4518,7 +4458,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 62
+        "y": 53
       },
       "id": 21,
       "options": {
@@ -4557,7 +4497,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 71
+        "y": 62
       },
       "id": 450,
       "panels": [],
@@ -4630,7 +4570,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 72
+        "y": 63
       },
       "id": 451,
       "options": {
@@ -4680,64 +4620,6 @@
               }
             ]
           },
-          "noValue": "—"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
-        "y": 72
-      },
-      "id": 452,
-      "options": {
-        "colorMode": "background_solid",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value",
-        "wideLayout": false,
-        "orientation": "vertical"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P1809F7CD0C757291"
-          },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> group()\n  |> sort(columns: [\"_time\"])\n  |> last()\n  |> filter(fn: (r) => r._value == 1)\n  |> map(fn: (r) => ({_value: r.emergency_type + \" @ \" + r.location, _field: \"Active Emergency\"}))\n  |> keep(columns: [\"_value\", \"_field\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "📍 Active Emergency Info",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P1809F7CD0C757291"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#73BF69",
-                "value": null
-              }
-            ]
-          },
           "noValue": "0"
         },
         "overrides": []
@@ -4746,7 +4628,7 @@
         "h": 4,
         "w": 4,
         "x": 12,
-        "y": 72
+        "y": 63
       },
       "id": 453,
       "options": {
@@ -4776,66 +4658,6 @@
       ],
       "title": "📊 Emergency Events Count",
       "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P1809F7CD0C757291"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic-by-name"
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 16,
-        "y": 72
-      },
-      "id": 454,
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "values": [
-            "value",
-            "percent"
-          ]
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": [
-            "sum"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "displayLabels": [
-          "name",
-          "percent"
-        ]
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P1809F7CD0C757291"
-          },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"emergencies\")\n  |> filter(fn: (r) => r._field == \"active\")\n  |> filter(fn: (r) => r._value == 1)\n  |> group(columns: [\"emergency_type\"])\n  |> count()\n  |> group()\n  |> map(fn: (r) => ({_value: r._value, _field: r.emergency_type, _time: now()}))\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_time\"])\n  |> rename(columns: {\"fire\": \"🔥 Incendio\", \"flood\": \"🌊 Alluvione\", \"earthquake\": \"🏚️ Terremoto\", \"gas_leak\": \"☣️ Gas Leak\", \"traffic_accident\": \"🚗 Incidente\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "🥧 Emergencies by Type",
-      "type": "piechart"
     },
     {
       "datasource": {
@@ -4907,7 +4729,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 76
+        "y": 67
       },
       "id": 455,
       "options": {
@@ -5053,7 +4875,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 76
+        "y": 67
       },
       "id": 456,
       "options": {

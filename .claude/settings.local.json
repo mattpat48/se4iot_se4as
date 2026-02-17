@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"id\")",
+      "Bash(\"name\")",
+      "Bash(InfluxDB)",
+      "Bash(MQTT)",
+      "Bash(City \" /c/Users/giova/Documents/File/Development/IOT/se4iot_se4as/nodered/data/flows.json)",
+      "Bash(docker compose:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker ps:*)"
+    ]
+  }
+}

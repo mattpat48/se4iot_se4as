@@ -21,14 +21,10 @@ class SensorData:
         return cls(**data)
 
 # Configuration Lists
-LOCATIONS = ["Road", "Square", "Park"]
+LOCATIONS = []
 
 # Real GPS coordinates for L'Aquila, Italy
-LOCATION_COORDS = {
-    "Road": {"lat": 42.3498, "lon": 13.3995},      # Corso Vittorio Emanuele II
-    "Square": {"lat": 42.3506, "lon": 13.3964},     # Piazza del Duomo
-    "Park": {"lat": 42.3538, "lon": 13.3917},       # Parco del Castello
-}
+LOCATION_COORDS = {}
 
 # Famous L'Aquila locations presets (selectable from UI)
 LAQUILA_PRESETS = {

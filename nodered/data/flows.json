@@ -278,7 +278,8 @@
         "y": 500,
         "wires": [
             [
-                "04a97613b16afc16"
+                "04a97613b16afc16",
+                "thresh_parser_001"
             ]
         ]
     },
@@ -375,5 +376,88 @@
         "x": 640,
         "y": 680,
         "wires": []
+    },
+    {
+        "id": "thresh_parser_001",
+        "type": "function",
+        "z": "16c28e429371841e",
+        "name": "Threshold Parser",
+        "func": "var data = msg.payload;\nif (typeof data === 'string') {\n    try { data = JSON.parse(data); } catch (e) { return null; }\n}\n\n// Only handle threshold updates\nif (msg.topic !== \"City/update/thresholds\") return null;\n\nvar thresholds = data.thresholds;\nif (!thresholds) return null;\n\nvar messages = [];\nvar types = Object.keys(thresholds);\nfor (var i = 0; i < types.length; i++) {\n    var t = types[i];\n    messages.push({\n        measurement: \"thresholds\",\n        payload: [\n            { value: parseFloat(thresholds[t]) },\n            { type: String(t) }\n        ]\n    });\n}\nreturn [messages];\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 560,
+        "wires": [
+            [
+                "thresh_influx_001"
+            ]
+        ]
+    },
+    {
+        "id": "thresh_influx_001",
+        "type": "influxdb out",
+        "z": "16c28e429371841e",
+        "influxdb": "c32de8e4c8baefe3",
+        "name": "Store Thresholds",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "iot_org",
+        "bucket": "iot_bucket",
+        "x": 640,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "thresh_inject_001",
+        "type": "inject",
+        "z": "16c28e429371841e",
+        "name": "Init Default Thresholds",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "3",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 760,
+        "wires": [
+            [
+                "thresh_default_fn_001"
+            ]
+        ]
+    },
+    {
+        "id": "thresh_default_fn_001",
+        "type": "function",
+        "z": "16c28e429371841e",
+        "name": "Default Thresholds",
+        "func": "var defaults = {\n    \"temperature\": 30.0,\n    \"humidity\": 80.0,\n    \"co2\": 1000.0,\n    \"traffic_speed\": 80.0,\n    \"noise_level\": 85.0,\n    \"seismic\": 4.0,\n    \"rain_level\": 50.0\n};\n\nvar messages = [];\nvar types = Object.keys(defaults);\nfor (var i = 0; i < types.length; i++) {\n    var t = types[i];\n    messages.push({\n        measurement: \"thresholds\",\n        payload: [\n            { value: defaults[t] },\n            { type: String(t) }\n        ]\n    });\n}\nreturn [messages];\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 760,
+        "wires": [
+            [
+                "thresh_influx_001"
+            ]
+        ]
     }
 ]

@@ -11,13 +11,13 @@ services:
       - ./influxdb/data:/var/lib/influxdb2
       - ./influxdb/config:/etc/influxdb2
     environment:
-      - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXDB_INIT_USERNAME=admin
-      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword123
-      - DOCKER_INFLUXDB_INIT_ORG=iot_org
-      - DOCKER_INFLUXDB_INIT_BUCKET=iot_bucket
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
-      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+      - DOCKER_INFLUXDB_INIT_MODE=${DOCKER_INFLUXDB_INIT_MODE}
+      - DOCKER_INFLUXDB_INIT_USERNAME=${DOCKER_INFLUXDB_INIT_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${DOCKER_INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${DOCKER_INFLUXDB_INIT_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${DOCKER_INFLUXDB_INIT_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+      - DOCKER_INFLUXDB_INIT_RETENTION=${DOCKER_INFLUXDB_INIT_RETENTION}
     healthcheck:
       test: ["CMD", "influx", "ping"]
       interval: 10s
@@ -41,8 +41,8 @@ services:
     environment:
       - MOSQUITTO_CONFIG=/mosquitto/config/mosquitto.conf
       - MOSQUITTO_PASSWORD_FILE=/mosquitto/config/passwordfile.txt
-      - MOSQUITTO_USERNAME=admin
-      - MOSQUITTO_PASSWORD=adminpassword123
+      - MOSQUITTO_USERNAME=${MQTT_USERNAME}
+      - MOSQUITTO_PASSWORD=${MQTT_PASSWORD}
     networks:
       - iot_net
 
@@ -57,11 +57,11 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards
       - ./grafana/data:/var/lib/grafana
     environment:
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/dashboard.json
-      - GF_UNIFIED_ALERTING_ENABLED=true
-      - GF_ALERTING_ENABLED=false
+      - GF_AUTH_ANONYMOUS_ENABLED=${GF_AUTH_ANONYMOUS_ENABLED}
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=${GF_AUTH_ANONYMOUS_ORG_ROLE}
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=${GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH}
+      - GF_UNIFIED_ALERTING_ENABLED=${GF_UNIFIED_ALERTING_ENABLED}
+      - GF_ALERTING_ENABLED=${GF_ALERTING_ENABLED}
     depends_on:
       influxdb:
         condition: service_healthy
@@ -78,8 +78,8 @@ services:
     volumes:
       - ./nodered/data:/data
     environment:
-      - TELEGRAM_TOKEN=8317054024:AAFWnjSDo1EuvSSoQ4ws8vgmMhvCItzDsKE
-      - TELEGRAM_CHAT_ID=-1003624991814
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
     depends_on:
       - mosquitto
       - influxdb
@@ -93,15 +93,15 @@ services:
     depends_on:
       - mosquitto
     environment:
-      - INFLUXDB_URL=http://influxdb:8086
-      - INFLUXDB_TOKEN=my-super-secret-auth-token
-      - INFLUXDB_ORG=iot_org
-      - INFLUXDB_BUCKET=iot_bucket
-      - MQTT_BROKER=mosquitto
-      - MQTT_PORT=1883
-      - MQTT_USERNAME=admin
-      - MQTT_PASSWORD=adminpassword123
-      - RESTORE_SESSION=true
+      - INFLUXDB_URL=${INFLUXDB_URL}
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+      - MQTT_BROKER=${MQTT_BROKER}
+      - MQTT_PORT=${MQTT_PORT}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - RESTORE_SESSION=${RESTORE_SESSION}
     networks:
       - iot_net
     volumes:
@@ -115,15 +115,15 @@ services:
       - mosquitto
       - influxdb
     environment:
-      - INFLUXDB_URL=http://influxdb:8086
-      - INFLUXDB_TOKEN=my-super-secret-auth-token
-      - INFLUXDB_ORG=iot_org
-      - INFLUXDB_BUCKET=iot_bucket
-      - MQTT_BROKER=mosquitto
-      - MQTT_PORT=1883
-      - MQTT_USERNAME=admin
-      - MQTT_PASSWORD=adminpassword123
-      - RESTORE_SESSION=true
+      - INFLUXDB_URL=${INFLUXDB_URL}
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+      - MQTT_BROKER=${MQTT_BROKER}
+      - MQTT_PORT=${MQTT_PORT}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - RESTORE_SESSION=${RESTORE_SESSION}
     networks:
       - iot_net
     volumes:
@@ -136,11 +136,11 @@ services:
     ports:
       - "8501:8501"
     environment:
-      - MQTT_BROKER=mosquitto
-      - MQTT_PORT=1883
-      - MQTT_USERNAME=admin
-      - MQTT_PASSWORD=adminpassword123
-      - RESTORE_SESSION=true
+      - MQTT_BROKER=${MQTT_BROKER}
+      - MQTT_PORT=${MQTT_PORT}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - RESTORE_SESSION=${RESTORE_SESSION}
     networks:
       - iot_net
     volumes:

@@ -220,7 +220,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r._field == \"lat\" or r._field == \"lon\" or r._field == \"°C\" or r._field == \"%\" or r._field == \"ppm\" or r._field == \"km/h\" or r._field == \"dB\" or r._field == \"Mw\" or r._field == \"mm/h\")\n  |> group(columns: [\"location\", \"_field\"])\n  |> last()\n  |> group()\n  |> pivot(rowKey: [\"location\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> filter(fn: (r) => r.lat > 0.0 and r.lon > 0.0)\n  |> rename(columns: {\"lat\": \"latitude\", \"lon\": \"longitude\"})\n  |> map(fn: (r) => ({\n    r with\n    display_value:\n      if \"${map_display}\" == \"humidity\" then r[\"%\"]\n      else if \"${map_display}\" == \"co2\" then r.ppm\n      else if \"${map_display}\" == \"traffic\" then r[\"km/h\"]\n      else if \"${map_display}\" == \"noise\" then r.dB\n      else if \"${map_display}\" == \"seismic\" then r.Mw\n      else if \"${map_display}\" == \"rain\" then r[\"mm/h\"]\n      else r[\"°C\"],\n    display_pct:\n      if \"${map_display}\" == \"humidity\" then r[\"%\"] / 80.0 * 100.0\n      else if \"${map_display}\" == \"co2\" then r.ppm / 1000.0 * 100.0\n      else if \"${map_display}\" == \"traffic\" then r[\"km/h\"] / 80.0 * 100.0\n      else if \"${map_display}\" == \"noise\" then r.dB / 85.0 * 100.0\n      else if \"${map_display}\" == \"seismic\" then r.Mw / 4.0 * 100.0\n      else if \"${map_display}\" == \"rain\" then r[\"mm/h\"] / 50.0 * 100.0\n      else r[\"°C\"] / 30.0 * 100.0\n  }))\n  |> rename(columns: {\n    \"°C\": \"Temperature (°C)\",\n    \"%\": \"Humidity (%)\",\n    \"ppm\": \"CO₂ (ppm)\",\n    \"km/h\": \"Traffic Speed (km/h)\",\n    \"dB\": \"Noise (dB)\",\n    \"Mw\": \"Seismic (Mw)\",\n    \"mm/h\": \"Rain (mm/h)\",\n    \"display_value\": \"📊 Current Value\",\n    \"display_pct\": \"📈 % of Threshold\"\n  })",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> filter(fn: (r) => r._field == \"lat\" or r._field == \"lon\" or r._field == \"°C\" or r._field == \"%\" or r._field == \"ppm\" or r._field == \"km/h\" or r._field == \"dB\" or r._field == \"Mw\" or r._field == \"mm/h\")\n  |> group(columns: [\"location\", \"_field\"])\n  |> last()\n  |> group()\n  |> pivot(rowKey: [\"location\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> filter(fn: (r) => r.lat > 0.0 and r.lon > 0.0)\n  |> rename(columns: {\"lat\": \"latitude\", \"lon\": \"longitude\"})\n  |> map(fn: (r) => ({\n    r with\n    display_pct: r[\"°C\"] / 30.0 * 100.0\n  }))\n  |> rename(columns: {\n    \"°C\": \"Temperature (°C)\",\n    \"%\": \"Humidity (%)\",\n    \"ppm\": \"CO₂ (ppm)\",\n    \"km/h\": \"Traffic Speed (km/h)\",\n    \"dB\": \"Noise (dB)\",\n    \"Mw\": \"Seismic (Mw)\",\n    \"mm/h\": \"Rain (mm/h)\",\n    \"display_pct\": \"📈 % of Threshold\"\n  })",
           "refId": "A"
         }
       ],
@@ -1896,7 +1896,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"°C\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"°C\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))\n  |> group(columns: [\"_field\"])",
           "refId": "A"
         },
         {
@@ -2273,7 +2273,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"%\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"%\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))\n  |> group(columns: [\"_field\"])",
           "refId": "A"
         },
         {
@@ -2650,7 +2650,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"ppm\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))\n  |> group(columns: [\"_field\"])",
           "refId": "A"
         },
         {
@@ -3027,7 +3027,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"km/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"km/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))\n  |> group(columns: [\"_field\"])",
           "refId": "A"
         },
         {
@@ -3404,7 +3404,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"dB\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"dB\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))\n  |> group(columns: [\"_field\"])",
           "refId": "A"
         },
         {
@@ -3781,7 +3781,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"Mw\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"Mw\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))\n  |> group(columns: [\"_field\"])",
           "refId": "A"
         },
         {
@@ -4158,7 +4158,7 @@
             "type": "influxdb",
             "uid": "P1809F7CD0C757291"
           },
-          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"mm/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))",
+          "query": "from(bucket: \"iot_bucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"sensors\")\n  |> filter(fn: (r) => r._field == \"mm/h\")\n  |> filter(fn: (r) => r.location =~ /^${location:regex}$/)\n  |> group(columns: [\"location\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({_time: r._time, _value: r._value, _field: r.location}))\n  |> group(columns: [\"_field\"])",
           "refId": "A"
         },
         {
@@ -5096,58 +5096,6 @@
   ],
   "templating": {
     "list": [
-      {
-        "current": {
-          "selected": true,
-          "text": "🌡️ Temperature",
-          "value": "temperature"
-        },
-        "hide": 0,
-        "includeAll": false,
-        "label": "🗺️ Map Display",
-        "multi": false,
-        "name": "map_display",
-        "options": [
-          {
-            "selected": true,
-            "text": "🌡️ Temperature",
-            "value": "temperature"
-          },
-          {
-            "selected": false,
-            "text": "💧 Humidity",
-            "value": "humidity"
-          },
-          {
-            "selected": false,
-            "text": "🌫️ CO₂",
-            "value": "co2"
-          },
-          {
-            "selected": false,
-            "text": "🚗 Traffic Speed",
-            "value": "traffic"
-          },
-          {
-            "selected": false,
-            "text": "🔊 Noise Level",
-            "value": "noise"
-          },
-          {
-            "selected": false,
-            "text": "🌋 Seismic",
-            "value": "seismic"
-          },
-          {
-            "selected": false,
-            "text": "🌧️ Rain Level",
-            "value": "rain"
-          }
-        ],
-        "query": "temperature : 🌡️ Temperature, humidity : 💧 Humidity, co2 : 🌫️ CO₂, traffic : 🚗 Traffic Speed, noise : 🔊 Noise Level, seismic : 🌋 Seismic, rain : 🌧️ Rain Level",
-        "skipUrlSync": false,
-        "type": "custom"
-      },
       {
         "allValue": ".*",
         "current": {
